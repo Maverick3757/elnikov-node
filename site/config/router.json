@@ -1,0 +1,169 @@
+{
+	"router": {
+		"/": {
+			"controller": "receive_add",
+			"methods": "receive_add",
+			"view": "receive_add",
+			"scripts":["receive_add"]
+		},
+		"/receive/add": {
+			"controller": "receive_add",
+			"methods": "receive_add",
+			"view": "receive_add",
+			"scripts":["receive_add"]
+		},
+		"/receives": {
+			"controller": "receives",
+			"methods": "receives",
+			"view": "receives",
+			"scripts":["receives"]
+		},
+		"/departments": {
+			"controller": "departments",
+			"methods": "departments",
+			"view": "departments",
+			"scripts":["departments"]
+		},
+		"/providers": {
+			"controller": "providers",
+			"methods": "providers",
+			"view": "providers",
+			"scripts":["providers"]
+		},
+		"/providers_details": {
+			"controller": "providers_details",
+			"methods": "providers_details",
+			"view": "providers_details",
+			"scripts":["providers_details"]
+		},
+		"/deductions": {
+			"controller": "deductions",
+			"methods": "deductions",
+			"view": "deductions",
+			"scripts":["deductions"]
+		},
+		"/sklad": {
+			"controller": "sklad",
+			"methods": "sklad",
+			"view": "sklad",
+			"scripts":["sklad"]
+		},
+		"/distribution": {
+			"controller": "distribution",
+			"methods": "distribution",
+			"view": "distribution",
+			"scripts":["distribution"]
+		},
+		"/managers": {
+			"controller": "managers",
+			"methods": "managers",
+			"view": "managers",
+			"scripts":["managers"]
+		},
+		"/seils": {
+			"controller": "seils",
+			"methods": "seils",
+			"view": "seils",
+			"scripts":["seils"]
+		},
+		"/tovar/add": {
+			"controller": "tovar_add",
+			"methods": "tovar_add",
+			"view": "tovar_add",
+			"scripts":["tovar_add"]
+		},
+		"/seils/add": {
+			"controller": "seils_add",
+			"methods": "seils_add",
+			"view": "seils_add",
+			"scripts":["seils_add"]
+		},
+		"/base": {
+			"methods": "base"
+		},
+		"/login": {
+			"controller": "login",
+			"methods": "login",
+			"view": "login",
+			"scripts":["login"]
+		},
+		"/providers_charge": {
+			"controller": "providers_charge",
+			"methods": "providers_charge",
+			"view": "providers_charge",
+			"scripts":["providers_charge"]
+		},
+		"/analitic": {
+			"controller": "analitic",
+			"methods": "analitic",
+			"view": "analitic",
+			"scripts":["analitic"]
+		},
+		"/car_brands": {
+			"controller": "car_brands",
+			"methods": "car_brands",
+			"view": "car_brands",
+			"scripts":["car_brands"]
+		},
+		"/model_edit": {
+			"controller": "model_edit",
+			"methods": "model_edit",
+			"view": "model_edit",
+			"scripts":["model_edit"]
+		},
+		"/car_models": {
+			"controller": "car_models",
+			"methods": "car_models",
+			"view": "car_models",
+			"scripts":["car_models"]
+		},
+		"/products_category": {
+			"controller": "products_category",
+			"methods": "products_category",
+			"view": "products_category",
+			"scripts":["products_category"]
+		},
+		"/product_edit": {
+			"controller": "product_edit",
+			"methods": "product_edit",
+			"view": "product_edit",
+			"scripts":["product_edit"]
+		},
+		"/orders": {
+			"controller": "orders",
+			"methods": "orders",
+			"view": "orders",
+			"scripts":["orders"]
+		},
+		"/order": {
+			"controller": "order",
+			"methods": "order",
+			"view": "order",
+			"scripts":["order"]
+		},
+		"/manufacturers": {
+			"controller": "manufacturers",
+			"methods": "manufacturers",
+			"view": "manufacturers",
+			"scripts":["manufacturers"]
+		},
+		"/shop-info": {
+			"controller": "shop_info",
+			"methods": "shop_info",
+			"view": "shop_info",
+			"scripts":["shop_info"]
+		},
+		"/product_labels": {
+			"controller": "product_labels",
+			"methods": "product_labels",
+			"view": "product_labels",
+			"scripts":["product_labels"]
+		},
+		"/news": {
+			"controller": "news",
+			"methods": "news",
+			"view": "news",
+			"scripts":["news"]
+		}
+	}
+}

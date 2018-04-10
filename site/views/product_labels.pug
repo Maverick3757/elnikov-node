@@ -1,0 +1,84 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(src="/js/lib/tinymce/tinymce.min.js").
+		script(src="/views/tinyEditor.js").
+		script.
+			tinyInit();
+
+		
+		link(rel="stylesheet" type="text/css" id="u0" href="/js/lib/tinymce/skins/custom/skin.min.css")
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div.flex.site-body
+			div#labels.site-content.col-6
+				h1 Метки товаров
+				div(class="row")
+					button(type="button" class="btn btn-primary pull-right" title="Добавить производителя" data-toggle="modal" data-target="#manufacturersAdd") Добавить метку
+					form(onsubmit="addManufacturer(event,this)")
+						div(class="modal fade" tabindex="-1" role="dialog" id="manufacturersAdd")
+							div(class="modal-dialog modal-lg" role="document")
+								div(class="modal-content")
+									div(class="modal-header")
+										button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+											span(aria-hidden="true") &times;
+										h4(class="modal-title") Новый производитель
+									div(class="modal-body")
+										ul(class="list-group" style="text-align: left")
+											li(class="list-group-item justify-content-between") Название
+												input(class="form-control" type="text" id="name" required)
+											li(class="list-group-item justify-content-between model_pic")
+												div(class="pull-left white upload-file") Фото
+													label(class="file_upload" for="export-xls")
+														span(class="button") Экспорт
+													input(type="file" id="export-xls" onchange="loadImg(this,event, false)")
+												img(src="http://busdetal.biz/public/img/no_photo.jpg")
+									div(class="modal-footer")
+										button(type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('.pass-edit').hide()") Закрыть
+										button(type="submit" class="btn btn-success") Сохранить
+				ul.flex.table-header.white
+					li.text-center ID
+					li.text-center Имя
+					li.text-center Лого
+				div.flex.scrolled-content
+					each label in data.labels
+						ul.flex(id="labels_"+label.id)
+							li.text-center=label.id
+							li.text-center
+								a(data-toggle="modal" data-target="#manufacturerEdit_"+label.id)=label.name
+							li#showing_order.col-2.text-center
+								img.logo(src=label.picture_name!=null?"http://busdetal.biz/public/img/labels/"+label.picture_name:"http://busdetal.biz/public/img/no_photo.jpg")
+								form(onsubmit="updateManufacturer(event,this)")
+									div(class="modal fade" tabindex="-1" role="dialog" id="manufacturerEdit_"+label.id)
+										div(class="modal-dialog modal-lg" role="document")
+											div(class="modal-content")
+												div(class="modal-header")
+													button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+														span(aria-hidden="true") &times;
+													h4(class="modal-title") Редактирование
+												div(class="modal-body")
+													ul(class="list-group" style="text-align: left")
+														li(class="list-group-item justify-content-between") Название
+															input(class="form-control" type="text" id="name" required value=label.name)
+														li(class="list-group-item justify-content-between model_pic")
+															div(class="pull-left white upload-file") Фото
+																label(class="file_upload" for="export-pic_"+label.id)
+																	span(class="button") Экспорт
+																input(type="file" id="export-pic_"+label.id onchange="loadImg(this,event, true)")
+															img(src=label.picture_name != null ? "http://busdetal.biz/public/img/labels/"
+																+ label.picture_name : "http://busdetal.biz/public/img/no_photo.jpg" ex-name = label.picture_name != null ? label.picture_name : "")
+												div(class="modal-footer")
+													button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+													a(type="button" onclick="deleteLabel(event,this)" class="btn btn-danger") Удалить
+													button(type="submit" class="btn btn-success") Сохранить
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+			

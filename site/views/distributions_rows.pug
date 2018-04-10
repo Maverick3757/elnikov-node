@@ -1,0 +1,17 @@
+if data.hasOwnProperty('tabindex')
+	- var tab_index = Number(data.tabindex);
+else
+	- var tab_index = 0;
+each val, index in data.distributions[0]	
+	tr(id="product_id_"+val.product_id)
+		td
+			div(class="row")=val.product_name
+			div(class="row")=val.providers_artikul
+			each val2, index2 in val
+				if index2.indexOf('department_')!=-1
+					td(id=index2)
+						if index2=='department_1'
+							input(class="form-control dep-qty" type="text" value=val2 disabled)
+						else
+							- tab_index++;
+							input(class="form-control dep-qty" type="text" tabindex=tab_index value=val2 onfocus="$(this).data('oldVal', $(this).val());this.select()" onchange="depQtyChanged(this)")

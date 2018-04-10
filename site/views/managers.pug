@@ -1,0 +1,132 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div(class="container")
+			div(class="row")
+				button(type="button" class="btn btn-primary pull-right" title="Добавить пользователя" data-toggle="modal" data-target="#userAdd") Добавить пользователя
+				form(onsubmit="addUser(event,this)")
+					div(class="modal fade" tabindex="-1" role="dialog" id="userAdd")
+						div(class="modal-dialog" role="document")
+							div(class="modal-content")
+								div(class="modal-header")
+									button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+										span(aria-hidden="true") &times;
+									h4(class="modal-title") Редактирование данных
+								div(class="modal-body")
+									ul(class="list-group" style="text-align: left")
+										li(class="list-group-item justify-content-between") Имя
+											input(class="form-control pull-right col-xs-2 col-sm-2 col-md-2" type="text" id="name" required)
+										li(class="list-group-item justify-content-between") Фамилия
+											input(class="form-control pull-right" id="family_name" type="text")
+										li(class="list-group-item justify-content-between") Логин
+											input(class="form-control pull-right" id="login" type="text" onchange="checkLogin(this)")
+											span(class="bg-danger" style="display:none") Пользователь с таким логином уже зарегестрирован!!!  
+										li(class="list-group-item justify-content-between") Должность
+											select(style="width:100%" data-placeholder="Должность" id="role")
+												option(value="") 
+												each rol in data.users_role
+													option(value=rol.id )=rol.role
+										li(class="list-group-item justify-content-between") EMail
+											input(class="form-control pull-right" type="email" name="" id="email")
+										li(class="list-group-item justify-content-between") Телефон
+											input(class="form-control pull-right" type="text" id="telephone")
+										li(class="list-group-item justify-content-between") Доступные отделы
+											select(style="width:100%" data-placeholder="Отделы" id="departments" multiple)
+												option(value="") 
+												each dep in data.departments
+													option(value=dep.id)=dep.name	
+										li(class="list-group-item justify-content-between" style="display:flex;height: initial;") Пароль
+											div(class="col-xs-12 col-sm-12 col-md-12 passes")
+												input(type="password" style="height:34px;width:51%" class="form-control pull-right" id="new_pass" placeholder="Пароль" required onchange="isSame('userAdd')")
+												div(class="input-response")
+													input(type="password" style="height:34px;width:51%" class="form-control pull-right" id="new_pass_again" placeholder="Пароль еще раз" required onchange="isSame('userAdd')")
+													span
+								div(class="modal-footer")
+									button(type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('.pass-edit').hide()") Закрыть
+									button(type="submit" class="btn btn-success") Сохранить
+		div(class='container table-responsive order-res')
+			table(id='sklad-table' class='table table-condensed table-hover text-center white' )
+				tr
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') ФИО
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Логин
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') EMail
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Телефон
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Отдел
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Должность
+					th
+				each val in data.users
+					tr
+						td(id="fio")=val.full_name
+						td(id="login")=val.login
+						td(id="email")=val.email
+						td(id="telephone")=val.telephone
+						td(id="departments")=val.departments
+						td(id="role_name")=val.role_name
+						td
+							button(type="button" class="btn btn-primary" title="Редактирование" data-toggle="modal" data-target="#userEdit_"+val.id)
+								span(class="icon-edit")
+							form(onsubmit="updateUser(event,this)")
+								div(class="modal fade" tabindex="-1" role="dialog" id="userEdit_"+val.id)
+									div(class="modal-dialog" role="document")
+										div(class="modal-content")
+											div(class="modal-header")
+												button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+													span(aria-hidden="true") &times;
+												h4(class="modal-title") Редактирование данных
+											div(class="modal-body")
+												ul(class="list-group" style="text-align: left")
+													li(class="list-group-item justify-content-between") Имя
+														input(class="form-control pull-right col-xs-2 col-sm-2 col-md-2" type="text" id="name" value=val.name required)
+													li(class="list-group-item justify-content-between") Фамилия
+														input(class="form-control pull-right" id="family_name" type="text" value=val.family_name)
+													li(class="list-group-item justify-content-between" style="height:auto") Логин
+														input(class="form-control pull-right" id="login" type="text" value=val.login required onchange="checkLogin(this,true)")
+														span(class="bg-danger" style="display:none") Пользователь с таким логином уже зарегестрирован!!! 
+													li(class="list-group-item justify-content-between") Должность
+														select(style="width:100%" data-placeholder="Должность" id="role")
+															option(value="") 
+															each rol in data.users_role
+																option(value=rol.id selected=(val.role==rol.id ? true : false))=rol.role
+													li(class="list-group-item justify-content-between") EMail
+														input(class="form-control pull-right" type="email" id="email" value=val.email)
+													li(class="list-group-item justify-content-between") Телефон
+														input(class="form-control pull-right" type="text" id="telephone" value=val.telephone)
+													li(class="list-group-item justify-content-between") Доступные отделы
+														select(style="width:100%" data-placeholder="Отделы" id="departments" multiple)
+															option(value="") 
+															each dep in data.departments
+																if val.departments!=null
+																	- var depArray = val.departments.split(', ');
+																	option(value=dep.id selected=(depArray.indexOf(dep.name)!=-1 ? true : false))=dep.name	
+																else
+																	option(value=dep.id)=dep.name	
+													li(class="list-group-item justify-content-between" style="display:flex;height: initial;width:100%")
+														div(class="col-xs-6 col-sm-6 col-md-6")
+															button(type="button" class="btn btn-primary" onclick="$(this).parent().next().show(400)") Изменить пароль
+														div(class="col-xs-6 col-sm-6 col-md-6 pass-edit")
+															div(class="input-response")
+																input(type="password" style="height:34px;width:100%" class="form-control" id="old_pass" placeholder="Старый пароль" onchange="isSame('userEdit_"+val.id+"',true)")
+																span
+															input(type="password" style="height:34px;width:100%" class="form-control" id="new_pass" placeholder="Новый пароль" onchange="isSame('userEdit_"+val.id+"',true)")
+															div(class="input-response")
+																input(type="password" style="height:34px;width:100%" class="form-control" id="new_pass_again" placeholder="Новый пароль еще раз" onchange="isSame('userEdit_"+val.id+"',true)")
+																span
+															button(type="button" id="pass_change" class="btn btn-success pull-right" style="display:none" onclick="changePassword('userEdit_"+val.id+"')") Изменить
+											div(class="modal-footer")
+												button(type="button" class="btn btn-danger" onclick="deleteUser("+val.id+")") Удалить
+												button(type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('.pass-edit').hide()") Закрыть
+												button(type="submit" class="btn btn-success") Сохранить
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

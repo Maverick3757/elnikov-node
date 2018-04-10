@@ -1,0 +1,42 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div(class='container table-responsive order-res')
+			table(id='products-table' class='table table-condensed text-center white' )
+				tr
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Товар
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Поставщик
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Артикул поставщика
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Дополнительная информация
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Номер ОЕ
+				tr
+					td(style="position:relative")
+						img(src="/css/img/deletered.png" onclick="deleteRow(this)")
+						input(id="product_name" type="text" class="form-control" onchange="dataChanged(this)")
+					td
+						select(style="width:100%" data-placeholder="Поставщик" id="providers" onchange="dataChanged(this)")
+							option(value="") 
+							each val, index in data.providers
+								option(value=val.id)=val.providers_name
+					td
+						input(id="providers_artikul" type="text" class="form-control" onchange="dataChanged(this)")
+					td
+						input(id="info" type="text" class="form-control")
+					td(style="position:relative")
+						input(id="vin" type="text" class="form-control" onchange="dataChanged(this)")
+						span(id="succes") 
+			button(type="button" class="btn btn-success pull-right" onclick="saveProducts()") Сохранить
+			script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

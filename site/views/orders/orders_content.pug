@@ -1,0 +1,12 @@
+//
+   Created by Юрий on 01.02.2018.
+each order in data.orders[0]
+    ul.flex(id="order_"+order.id)
+        li.col-1.text-center
+            a(href="/order?id="+order.id)=order.id
+        li.text-center=order.user_name
+        li.text-center!=order.user_email+'/<br>'+order.user_telephone
+        li.text-center=order.status
+        li.text-center=order.order_sum+" грн"
+        li.text-center=order.date
+

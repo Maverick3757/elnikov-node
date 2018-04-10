@@ -1,0 +1,15 @@
+each val, index in data.charges
+					li
+						div=val.prop_date
+						div=val.description
+						div=val.name
+						div.charge-sum
+							if val.id=="order"
+								input(type="text" data-type="number" value=val.sum.toFixed(2) disabled)
+							else
+								input(type="text" data-type="number" value=val.sum.toFixed(2) onchange="changeChargeSum("+val.id+",this.value)")
+						div.charge-rate
+							if val.id=="order"
+								input(type="text" data-type="number" value=val.rate.toFixed(2) disabled)
+							else
+								input(type="text" data-type="number" value=val.rate.toFixed(2) onchange="changeChargeRate("+val.id+",this.value)")

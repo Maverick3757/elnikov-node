@@ -1,0 +1,197 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div.flex.site-body
+			div#product_edit.site-content.col-8
+				h1=data.product.product_id=="new"?"Новая марка":data.product.product_name
+				div.row
+					input#car_brand(type="hidden")
+					input#product_id(type="hidden" value=data.product.product_id)
+					button.btn.btn-success.pull-left(onclick="saveData()") Сохранить
+					a.btn.btn-primary(onclick="history.back();" style="margin-left:10px") Назад
+				div.flex.white
+					div.info-block.col-10
+						ul.nav.nav-tabs
+							li.active
+								a(data-toggle="tab" href="#product_info") Информация
+							li
+								a(data-toggle="tab" href="#car_packages") Автомобили
+							li
+								a(data-toggle="tab" href="#products_picture") Изображения
+							li
+								a(data-toggle="tab" href="#products_charakteristiks") Характеристики
+							li
+								a(data-toggle="tab" href="#products_analogs") Аналоги/заменители
+						div.tab-content
+							div#product_info.tab-pane.fade.in.active
+								div.container-fluid
+									h2 Информация
+								div.content
+									label Название
+									input#product_name.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.product_name : "" required)
+									label Цена(от поставщика)
+									div.manual-price
+										input#manual_price.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.manual_price : "")
+										select#manual_price_currency.form-control(data-attr="chosen" data-placeholder="Валюта")
+											option(value="")
+											each currency in data.todayRate
+												if data.product.hasOwnProperty('product_name')
+													if data.product.manual_price_currency == currency.id
+														option(value=currency.id selected)=currency.name
+													else
+														option(value=currency.id)=currency.name
+												else
+													option(value=currency.id)=currency.name
+									label Дисконт(%)
+									input#discont.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.discont.toFixed(2) : "")
+									label Метка товара
+									select#labels.form-control(data-attr="chosen" data-placeholder="Выберите метку")
+										option(value="")
+											each label in data.labels
+												if data.product.hasOwnProperty('product_name')
+													if data.product.label_id == label.id
+														option(value=label.id selected style="background-image:url(http://busdetal.biz/public/img/labels/"+label.picture_name+");")=label.name
+													else
+														option(value=label.id style="background-image:url(http://busdetal.biz/public/img/labels/"+label.picture_name+");")=label.name
+												else
+													option(value=label.id style="background-image:url(http://busdetal.biz/public/img/labels/"+label.picture_name+");")=label.name
+									label Артикул поставщика
+									input#providers_artikul.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.providers_artikul : "" required)
+									label Номер ОЕ
+									input#product_oe.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.vin : "")
+									label Доп. информация
+									input#dop_info.form-control(value=data.product.hasOwnProperty('product_name') ? data.product.info : "")
+									label Поставщик
+									select#product_providers.form-control(required data-attr="chosen" data-placeholder="Выберите поставщика")
+										option(value="")
+										each prov in data.providers
+											if data.product.hasOwnProperty('product_name')
+												if data.product.providers == prov.id
+													option(value=prov.id selected)=prov.providers_name
+												else
+													option(value=prov.id)=prov.providers_name
+											else
+												option(value=prov.id)=prov.providers_name
+									label Производитель
+									select#manufacturers.form-control(required data-attr="chosen" data-placeholder="Выберите производителя")
+										option(value="")
+										each manuf in data.manufacturers
+											if data.product.hasOwnProperty('product_name')
+												if data.product.manufacturer == manuf.id
+													option(value=manuf.id selected)=manuf.name
+												else
+													option(value=manuf.id)=manuf.name
+											else
+												option(value=manuf.id)=manuf.name
+									label Категория
+									select#product_category.form-control(required data-attr="chosen" data-placeholder="Выберите категорию" multiple)
+										option(value="")
+										if data.product.product_id!='new'
+											- prod_categories = data.product.category_id!=null?data.product.category_id.split(','):null;
+											- category_to_products_id = data.product.category_to_products_id!=null?data.product.category_to_products_id.split(','):null;
+										else
+											- prod_categories = null;
+											- category_to_products_id = null;
+										each group in data.parts_groups
+											if prod_categories!=null
+												if prod_categories.indexOf(group.id.toString()) >-1
+													option(value=group.id selected data-row_id=category_to_products_id[prod_categories.indexOf(group.id.toString())])=group.category_name
+												else
+													option(value=group.id)=group.category_name
+											else
+												option(value=group.id)=group.category_name
+									label Описание
+									textarea#discription.form-control=data.product.hasOwnProperty('product_name') ? data.product.discription : ""
+									label Мета описание
+									textarea#meta_description.form-control=data.product.hasOwnProperty('product_name') ? data.product.meta_description : ""
+									label Ключевики
+									textarea#meta_keywords.form-control=data.product.hasOwnProperty('product_name') ? data.product.meta_keywords : ""
+							div#car_packages.tab-pane.fade
+								div.container-fluid
+									h2 Автомобили
+								div.content
+									input#removed_engines(type="hidden")
+									input#new_engines(type="hidden")
+									include product_edit_mixins/mixin
+									ul#cars-clone.flex.hidden
+										span.icon-delete
+										+getModelsSample(data.car_brands,0)
+										- maxIndex = 1;
+									each val, index in data.product_to_cars
+										- maxIndex = maxIndex+1;
+										ul.flex
+											span.icon-delete(onclick="deleteCar("+(index+1)+")")
+											+getModels(data.car_brands, data.car_models, data.car_packages, data.car_engines, val, index+1)
+									ul.flex
+										span.icon-delete(onclick="deleteCar("+(maxIndex)+")")
+										+getModelsSample(data.car_brands,maxIndex)
+
+							div#products_picture.tab-pane.fade
+								div.container-fluid
+									h2 Изображения
+								div.content
+									if data.product.picture_names!=null
+										- pictures = data.product.picture_names.split('|');
+										- pictures_id = data.product.picture_row_ids.split(',');
+										- pictures_ordering = data.product.picture_orderings.split(',');
+										each pic, index in pictures
+											div.picture-block.flex
+												label(class="file_upload" for="image_"+(pictures.length-index))
+													img(src="http://busdetal.biz/public/img/products/"+pic ex-data=pic picture-row-id=pictures_id[index])
+													div Заменить фото
+												input(type="file" id="image_"+(pictures.length-index) onchange="loadImg(this,event)")
+												input(type="text" id="order_"+(pictures.length-index) value=pictures_ordering[index] ex-data=pictures_ordering[index] onchange="changeImgOrder(this)" onfocus="$(this).attr('ex-data',this.value)")
+												button.btn-danger(onclick="$(this).closest('.picture-block').addClass('hidden deleted')") Удалить
+									div.picture-block.flex.clone
+										label(class="file_upload" for="image_0")
+											img(src="/css/img/upload_photo.png")
+											div Загрузить фото
+										input(type="file" id="image_0" onchange="loadImg(this,event)")
+										input.hidden(type="text" id="order_0" onchange="changeImgOrder(this)" onfocus="$(this).attr('ex-data',this.value)")
+										button.hidden.btn-danger(onclick="$(this).closest('.picture-block').addClass('hidden deleted')") Удалить
+							div#products_charakteristiks.tab-pane.fade
+								div.container-fluid
+									h2 Характеристики
+								div.content
+									if data.product.fields_row_ids != null
+										- fields_row_ids = data.product.fields_row_ids.split(',');
+										- field_names = data.product.field_names.split('|');
+										- field_value = data.product.field_value.split('|');
+										each field, index in fields_row_ids
+											div.row.flex(row-id=field)
+												span.icon-delete(onclick="$(this).closest('.row').addClass('hidden deleted')")
+												input.form-control(value=field_names[index] placeholder='Название характеристики')
+												input.form-control(value=field_value[index] placeholder='Значение характеристики')
+									div.row.flex.clone
+										span.icon-delete(onclick="$(this).closest('.row').addClass('hidden deleted')")
+										input.form-control(placeholder='Название характеристики' oninput="addNewCharakRow(this)")
+										input.form-control(placeholder='Значение характеристики' oninput="addNewCharakRow(this)")
+							div#products_analogs.tab-pane.fade
+								div.container-fluid
+									h2 Аналоги/заменители
+								div.content
+									input.form-control(type="text" placeholder="Введите данные для поиска товаров" oninput="searchProduct(this)")
+									ul.flex.analog-search-result(style="display:none")
+									div.col-10
+										ul.equivalent_product.flex.col-10
+											each equv in data.equivalents
+												li.flex(data-product_id=equv.equivalen_product data-row_id=equv.id)
+													span.icon-delete(onclick="removeEquivalent(this)")
+													div.img-block
+														img(src=equv.picture_name!=null?"http://busdetal.biz/public/img/products/"+equv.picture_name:"http://busdetal.biz/public/img/no_photo.jpg")
+													div.discription.flex
+														div.name!="<strong>"+equv.product_name+"</strong>("+equv.info+")"
+														div.artikul!="<strong>Артикул:</strong>"+equv.providers_artikul
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')

@@ -1,0 +1,8 @@
+name: basezil1_elnikovDB,
+password: WsfzhUEr$noK,
+user: basezil1_elnikov
+
+//ftp
+
+password: NOX+cE%nvoij,
+user: elnikov

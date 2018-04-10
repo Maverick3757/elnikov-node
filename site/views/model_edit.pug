@@ -1,0 +1,121 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div(class="modal fade" id="addYear" role="dialog")
+			form(onsubmit="addNewYears(event)")
+				div(class="modal-dialog modal-sm")
+					div(class="modal-content")
+						div(class="modal-header")
+							button(type="button" class="close" data-dismiss="modal") &times;
+							h4(class="modal-title") Новый период выпуска
+						div(class="modal-body")
+							input(type="text" class="form-control text-center" id="newYearData" value="" placeholder="Период выпуска" required)
+							div(id="search-result")
+						div(class="modal-footer")
+							button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+							button(type="submit" class="btn btn-success") Добавить
+		div.flex.site-body
+			div.sidemenu.col-2
+				ul.flex.flex-column
+					li
+						a(href="/car_brands") Марки
+					li.has-inner.active Модели
+						ul.sub_menu.flex-column(style="display:none")
+							each brand in data.car_brands
+								li
+									a(href="/car_models?car_brand=" + brand.id)=brand.brand_name
+			div#model_edit.site-content.col-8
+				h1=data.model.hasOwnProperty('model')?data.model.model.model_name:"Новая марка"
+				div.row
+					input#car_brand(type="hidden" value=data.model.car_brand)
+					input#model_id(type="hidden" value=data.model.hasOwnProperty('model')?data.model.model.id:data.model.id)
+					button.btn.btn-success.pull-left(onclick="saveData()") Сохранить
+					a.btn.btn-primary(href="/car_models?car_brand="+data.model.car_brand style="margin-left:10px") Назад
+				div.flex.white
+					div.info-block.col-4
+						h3.text-center Информация
+						div.content
+							label Название
+							input#model_name.form-control(value=data.model.hasOwnProperty('model')?data.model.model.model_name:"")
+							label Описание
+							textarea#model_meta_desc.form-control=data.model.hasOwnProperty('model')?data.model.model.meta_description:""
+							label Ключевики
+							input#model_keywords.form-control(value=data.model.hasOwnProperty('model')?data.model.model.meta_keywords:"")
+							div(class="pull-left white upload-file") Фото
+								label(class="file_upload" for="export-model-pic")
+									span(class="button") Загрузить
+								input(type="file" id="export-model-pic" onchange="loadImg(this,event, true)")
+								if data.model.hasOwnProperty('model')
+									img(src="http://busdetal.biz//public/img/car_models/"+data.model.model.picture_name ex-name=data.model.model.picture_name img-name=data.model.model.picture_name)
+								else
+									img(src="http://busdetal.biz/public/img/no_photo.jpg")
+					div.packing-block.col-6
+						h3.text-center Комплектации
+						ul.nav.nav-tabs
+							if data.model.hasOwnProperty('model')
+								if data.model.model.packages_id!==null
+									- var packages_id = data.model.model.packages_id.split("|||");
+									- var build_years = data.model.model.build_years.split("|||");
+									- var package_pictures = data.model.model.package_pictures.split("|||");
+									each val, index in packages_id
+										li(class=index == 0 ? "active" : "")
+											a(data-toggle="tab" href="#" + build_years[index].replace(/[.]/g, '1'))=build_years[index]
+							li.addYear
+								a(data-toggle="modal" data-target="#addYear") Добавить+
+
+						div.tab-content
+							div#clone-exapmle.tab-pane.fade
+								div.engine-head
+									label Год выпуска
+									input.form-control.text-center(name="yearsBuild" oninput="yearsChanged(this)")
+									button.btn.btn-danger(type="button" onclick="deleteYears(this)") Удалить
+								div.engines-block.flex-column
+									h4 Типы двигателей
+									div.flex
+									button.btn.btn-success(onclick="addNewEngine(this)") Добавить
+								div.picture-block.upload-file
+									label(class="file_upload")
+										span(class="button") Загрузить фото
+									input(type="file" onchange="loadImg(this,event, true)")
+									img(src="http://busdetal.biz/public/img/no_photo.jpg")
+							if data.model.hasOwnProperty('model')
+								if data.model.model.packages_id !== null
+									each val, index in packages_id
+											div(id=build_years[index].replace(/[.]/g, '1') class=index == 0 ? "tab-pane fade in active" : "tab-pane fade")
+												div.engine-head
+													label Год выпуска
+													input#packing_id(type="hidden" value=val)
+													input.form-control.text-center(name="yearsBuild" oninput="yearsChanged(this)" value=build_years[index] ex-year=build_years[index])
+													button.btn.btn-danger(type="button" onclick="deleteYears(this)") Удалить
+												div.engines-block.flex-column
+													h4 Типы двигателей
+													if data.model.engines.hasOwnProperty(val)
+														each engine in data.model.engines[val]
+															div.flex
+																input#engine-id(type="hidden" value=engine.id)
+																input#engine-value.form-control(value=engine.engine)
+																span.icon-delete(onclick="deleteEngine(this)")
+													button.btn.btn-success(onclick="addNewEngine(this)") Добавить
+												div.picture-block.upload-file
+													label(class="file_upload" for="export-year-pic_"+build_years[index].replace(/[.]/g, '1'))
+														span(class="button") Загрузить фото
+													input(type="file" onchange="loadImg(this,event, true)" id="export-year-pic_"+build_years[index].replace(/[.]/g, '1'))
+													if package_pictures[index] !== ''
+														img(src="http://busdetal.biz//public/img/car_packing/" + package_pictures[index] ex-name=package_pictures[index] img-name=package_pictures[index])
+													else
+														img(src="http://busdetal.biz/public/img/no_photo.jpg")
+
+
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')

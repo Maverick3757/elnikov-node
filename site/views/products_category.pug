@@ -1,0 +1,93 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(src="/js/lib/tinymce/tinymce.min.js").
+		script(src="/views/tinyEditor.js").
+		script.
+			tinyInit();
+		link(rel="stylesheet" type="text/css" id="u0" href="/js/lib/tinymce/skins/custom/skin.min.css")
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div#products-category.site-content.col-7
+			input#max-order(type="hidden" value=data.categories.length)
+			h1 Категории
+			div(class="row")
+				button(type="button" class="btn btn-primary pull-right" title="Добавить марку" data-toggle="modal" data-target="#categoryAdd") Добавить категорию
+				form(onsubmit="addСategory(event,this)")
+					div(class="modal fade" tabindex="-1" role="dialog" id="categoryAdd")
+						div(class="modal-dialog modal-lg" role="document")
+							div(class="modal-content")
+								div(class="modal-header")
+									button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+										span(aria-hidden="true") &times;
+									h4(class="modal-title") Новая категория
+								div(class="modal-body")
+									ul(class="list-group" style="text-align: left")
+										li(class="list-group-item justify-content-between") Название
+											input(class="form-control" type="text" id="category_name" required)
+										li(class="list-group-item justify-content-between model_pic")
+											div(class="pull-left white upload-file") Фото
+												label(class="file_upload" for="export-xls")
+													span(class="button") Экспорт
+												input(type="file" id="export-xls" onchange="loadImg(this,event, false)")
+											img(src="http://busdetal.biz/public/img/no_photo.jpg")
+										li(class="list-group-item justify-content-between") Описание
+											textarea#discription.tiny
+										li(class="list-group-item justify-content-between") Ключевики
+											input(class="form-control pull-right" id="meta_keywords" type="text")
+								div(class="modal-footer")
+									button(type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('.pass-edit').hide()") Закрыть
+									button(type="submit" class="btn btn-success") Сохранить
+			ul.flex.table-header.white
+				li.col-1.text-center ID
+				li.text-center Категория
+				li.text-center Лого
+				li.col-2.text-center Порядок
+			div.flex.scrolled-content
+				each category in data.categories
+					ul.flex(id="category_"+category.id)
+						li.col-1.text-center=category.id
+						li.text-center
+							a(data-toggle="modal" data-target="#categoryEdit_"+category.id)=category.category_name
+						li.text-center
+							img.logo(src=category.picture_name!=null?"http://busdetal.biz/public/img/products_category/"
+								+category.picture_name:"http://busdetal.biz/public/img/no_photo.jpg")
+						li#showing_order.col-2.text-center
+							input.form-control(value=category.order ex-order=category.order onchange="changeOrder(this)")
+							form(onsubmit="updateCategory(event,this)")
+								div(class="modal fade" tabindex="-1" role="dialog" id="categoryEdit_"+category.id)
+									div(class="modal-dialog modal-lg" role="document")
+										div(class="modal-content")
+											div(class="modal-header")
+												button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+													span(aria-hidden="true") &times;
+												h4(class="modal-title") Редактирование
+											div(class="modal-body")
+												ul(class="list-group" style="text-align: left")
+													li(class="list-group-item justify-content-between") Название
+														input(class="form-control" type="text" id="category_name" required value=category.category_name)
+													li(class="list-group-item justify-content-between model_pic")
+														div(class="pull-left white upload-file") Фото
+															label(class="file_upload" for="export-pic_"+category.id)
+																span(class="button") Экспорт
+															input(type="file" id="export-pic_"+category.id onchange="loadImg(this,event, true)")
+														img(src=category.picture_name != null ? "http://busdetal.biz/public/img/products_category/"
+															+ category.picture_name : "http://busdetal.biz/public/img/no_photo.jpg" ex-name = category.picture_name != null ? category.picture_name : "")
+													li(class="list-group-item justify-content-between") Описание
+														textarea#discription.tiny=category.discription
+													li(class="list-group-item justify-content-between") Ключевики
+														input(class="form-control" id="meta_keywords" type="text" value=category.meta_keywords)
+											div(class="modal-footer")
+												button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+												button(type="submit" class="btn btn-success") Сохранить
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+			

@@ -1,0 +1,98 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(src="/js/lib/tinymce/tinymce.min.js").
+		script(src="/views/tinyEditor.js").
+		script.
+			tinyInit();
+
+		
+		link(rel="stylesheet" type="text/css" id="u0" href="/js/lib/tinymce/skins/custom/skin.min.css")
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div.flex.site-body
+			div#manufacturers.site-content.col-6
+				h1 Новости
+				div(class="row")
+					button(type="button" class="btn btn-primary pull-right" title="Добавить новость" data-toggle="modal" data-target="#manufacturersAdd") Добавить новость
+					form(onsubmit="addManufacturer(event,this)")
+						div(class="modal fade" tabindex="-1" role="dialog" id="manufacturersAdd")
+							div(class="modal-dialog modal-lg" role="document")
+								div(class="modal-content")
+									div(class="modal-header")
+										button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+											span(aria-hidden="true") &times;
+										h4(class="modal-title") Новый производитель
+									div(class="modal-body")
+										ul(class="list-group" style="text-align: left")
+											li(class="list-group-item justify-content-between") Название
+												input(class="form-control" type="text" id="name" required)
+											li(class="list-group-item justify-content-between model_pic")
+												div(class="pull-left white upload-file") Фото
+													label(class="file_upload" for="export-xls")
+														span(class="button") Экспорт
+													input(type="file" id="export-xls" onchange="loadImg(this,event, false)")
+												img(src="http://busdetal.biz/public/img/no_photo.jpg")
+											li(class="list-group-item justify-content-between") Описание
+												textarea#discription.tiny
+											li(class="list-group-item justify-content-between") Мета описание
+												textarea#meta_discription(style="resize: vertical;width:100%")
+											li(class="list-group-item justify-content-between") Ключевики
+												textarea#meta_keywords(style="resize: vertical;width:100%")
+									div(class="modal-footer")
+										button(type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('.pass-edit').hide()") Закрыть
+										button(type="submit" class="btn btn-success") Сохранить
+				ul.flex.table-header.white
+					li.text-center ID
+					li.text-center Имя
+					li.text-center Описание
+					li.text-center Лого
+				div.flex.scrolled-content
+					each newses in data.news
+						ul.flex(id="manufacturer_"+newses.id)
+							li.text-center=newses.id
+							li.text-center
+								a(data-toggle="modal" data-target="#manufacturerEdit_"+newses.id)=newses.name
+							li.text-center(style="display: inline-block;vertical-align: top;")!=newses.content.substr(0,512)+' ...'
+							li#showing_order.col-2.text-center
+								img.logo(src=newses.picture!=null?"http://busdetal.biz/public/img/news/"+newses.picture:"http://busdetal.biz/public/img/no_photo.jpg")
+								form(onsubmit="updateManufacturer(event,this)")
+									div(class="modal fade" tabindex="-1" role="dialog" id="manufacturerEdit_"+newses.id)
+										div(class="modal-dialog modal-lg" role="document")
+											div(class="modal-content")
+												div(class="modal-header")
+													button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+														span(aria-hidden="true") &times;
+													h4(class="modal-title") Редактирование
+												div(class="modal-body")
+													ul(class="list-group" style="text-align: left")
+														li(class="list-group-item justify-content-between") Название
+															input(class="form-control" type="text" id="name" required value=newses.name)
+														li(class="list-group-item justify-content-between model_pic")
+															div(class="pull-left white upload-file") Фото
+																label(class="file_upload" for="export-pic_"+newses.id)
+																	span(class="button") Экспорт
+																input(type="file" id="export-pic_"+newses.id onchange="loadImg(this,event, true)")
+															img(src=newses.picture != null ? "http://busdetal.biz/public/img/news/"
+																+ newses.picture : "http://busdetal.biz/public/img/no_photo.jpg" ex-name = newses.picture != null ? newses.picture : "")
+														li(class="list-group-item justify-content-between") Описание
+															textarea#discription.tiny=newses.content
+														li(class="list-group-item justify-content-between") Мета описание
+															textarea#meta_discription(style="resize: vertical;width:100%")=newses.meta_discription
+														li(class="list-group-item justify-content-between") Ключевики
+															textarea#meta_keywords(style="resize: vertical;width:100%")=newses.meta_keywords
+												div(class="modal-footer")
+													button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+													a(onclick="deleteNews("+newses.id+")" class="btn btn-danger") Удалить
+													button(type="submit" class="btn btn-success") Сохранить
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+			

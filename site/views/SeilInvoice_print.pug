@@ -1,0 +1,37 @@
+if sail_id!="Спецификация"
+	h2='Продажа № '+sail_id+' от ' + new Date().getDate()+'.'+(new Date().getMonth()+1)+'.'+new Date().getFullYear()
+else
+	button(onclick="window.print()") Печать
+	h2=sail_id+' от ' + new Date().getDate()+'.'+(new Date().getMonth()+1)+'.'+new Date().getFullYear()
+table(class='table table-condensed text-center')
+	tr
+		th №
+		th Наименование
+		th Цена, грн
+		th Кол-во
+		th Сумма, грн
+	- var num = 1;
+	each val in data.products
+		- sum = val[4]*val[5];
+		tr
+			td=num
+			td(style="text-align:left;padding-left:30px")
+				div(class="row")!=val[1]
+				div(class="row")=val[2]
+			td=val[5]
+			td=val[4]
+			td=sum
+		- num=num+1;
+div(class="pull-right" style="font-size: 20px; font-weight:bold")="ИТОГО: "+data.seil_sum+" грн"
+	script.
+		window.onresize = function () {
+
+			curWidth = window.outerWidth * 0.264583;
+			el = document.getElementsByTagName('body')[0];
+			if(curWidth<240){
+				el.style.transformOrigin="0 0";
+				el.style.transform="scale("+(curWidth)/240+")";
+			}else{
+				el.removeAttribute('style');
+			}
+		};

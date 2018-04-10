@@ -1,0 +1,23 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		div(id="loading-popup")
+		div(class="login-container")
+			h2 Авторизируйтесь
+			form(onsubmit="userVerify(event)")
+				input(type="text" class="form-control" id="login" placeholder="Введите логин" required)
+				input(type="password" class="form-control" id="password" placeholder="Введите пароль" required)
+				button(type="submit" class="btn btn-success") Войти
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')

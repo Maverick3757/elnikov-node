@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+<title>Ельников</title>
+</head>
+<style>
+body {
+    background-color: #4e658e66;
+}
+.main {
+    display: flex;
+    padding-left: 0px;
+    overflow-x: hidden;
+    align-items: center;
+    overflow-y: auto;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; 
+    z-index: 1050;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+	flex-direction:column
+}
+.img{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.img>img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.text{
+	font-size: 45px;
+    font-family: Arial;
+    color: #6b6a6a;
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+</style>
+<body>
+<div class="main">
+	<div class="img">
+		<img src="img/loose.png">
+	</div>
+	<div class="text">
+		<div>Запуск программы...</div><div style="height: 100px;"><img style="height: 100%;" src="img/loading_cirk.gif"></div>
+	</div>
+</div>
+</body>
+</html>

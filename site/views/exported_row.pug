@@ -1,0 +1,96 @@
+﻿- var index = 0;
+- var scrollArea = winHeight;
+- var trSum = 0;
+each row in xlData
+	- trSum = trSum+trHeight;
+	if trSum>scrollArea
+		- scrollArea = scrollArea+winHeight;
+	if row.hasOwnProperty("artikul")
+		- index = index+1;
+		- pos = art_array.indexOf(row.artikul.toString());
+		
+		if row.hasOwnProperty('name')
+			- prod_name = row.name;
+		else
+			- prod_name = 0;
+		if row.hasOwnProperty('sail_price')
+			- sail_price = row.sail_price;
+		else
+			- sail_price = "";
+
+		if row.hasOwnProperty('info')
+			- prod_info = row.info;
+		else
+			- prod_info = "";
+
+		if row.hasOwnProperty('price')
+			- prod_price = row.price.toFixed(2);
+		else
+			- prod_price = 0;
+
+		if sail_price===""
+			if currency != 1
+				- sail_price = (prod_price*marga).toFixed(2)
+			else
+				- sail_price = ((prod_price/rate)*marga).toFixed(2)
+		else
+			if currency == 1
+				- sail_price = (sail_price/rate).toFixed(2)
+
+		if row.hasOwnProperty('oe')
+			- prod_oe = row.oe;
+		else
+			- prod_oe = "";
+			
+		if row.hasOwnProperty('qty')
+			- prod_qty = row.qty;
+		else
+			- prod_qty = 0;
+		
+		tr(class=pos>=0?"":"new")
+			td
+				if pos>=0
+					select(style="width:100%" data-placeholder="Артикул поставщика" id="providersArtikul_"+index onchange="artikulChanged(this)")
+						option(value=exData[pos].providers_artikul)=exData[pos].providers_artikul
+				else
+					input(type="text" id="providersArtikul_"+index value=row.artikul)
+					input(type="hidden" id="oenum_"+index value=prod_oe)
+					input(type="hidden" id="info_"+index value=prod_info)
+			td
+				if pos>=0
+					select(style="width:100%" data-placeholder="Название" id="name_"+index onchange="tovarChanged(this)")
+						option(value=exData[pos].id)=exData[pos].product_name
+				else
+					input(type="text" id="name_"+index value=prod_name)
+			td(id="prodInfo_"+index)=pos >= 0?exData[pos].info:prod_info
+
+			td(class=currency==1?"price-uah":"price-uah hidden")
+				input(class="form-control" data-type="number" type="text" value=currency==1?prod_price:"" id="priceUah_"+index onchange="convertToEur(this)")
+			td
+				input(class="form-control" data-type="number" type="text" value=currency!=1?prod_price:(prod_price/rate).toFixed(2) id="price_"+index onchange="findSeilPrice(this);findOrderSumm()")
+			td
+				input(class="form-control" data-type="number" type="text" value=sail_price id="seilPrice_"+index)
+			td
+				input(class="form-control" type="text" id="qty_"+index onchange="qtyChanged(this)" value=prod_qty)
+			td(class="text-center")
+				button(type="button" class="btn btn-danger" id="groupButton_"+index data-toggle="modal" data-target="#departmentOrdering_"+index) Распределение
+					span(class="badge badge-default badge-pill" id="undef-qty")=prod_qty
+				div(class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="departmentOrdering_"+index)
+					div(class="modal-dialog modal-sm" role="document")
+						div(class="modal-content")
+							div(class="modal-header")
+								button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+									span(aria-hidden="true") &times;
+								h4(class="modal-title" id="myModalLabel") Распределение по отделам
+							div(class="modal-body")
+								ul(class="list-group")
+									each val in departments
+										li(class="list-group-item justify-content-between")=val.name
+											if val.id==1
+												span(class="badge red badge-default badge-pill" id="undef-qty")=prod_qty
+												span(class="badge badge-default badge-pill pull-right" id="departmentRes_"+index)=pos!=-1?exData[pos]["department_"+val.id]:0
+											else
+												input(class="form-control pull-right input_qty_dialog" id="department_"+val.id type="text" onchange="checkResidues(this)")
+												input(class="form-control pull-right input_qty_dialog input_qty_residues" id="departmentRes_"+val.id disabled type="text" value=pos>=0?exData[pos]["department_"+val.id]:0 onchange="checkResidues(this)")
+							div(class="modal-footer")
+								button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть

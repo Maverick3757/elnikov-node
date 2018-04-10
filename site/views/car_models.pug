@@ -1,0 +1,52 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(src="/js/lib/tinymce/tinymce.min.js").
+		script(src="/views/tinyEditor.js").
+		script.
+			tinyInit();
+
+		
+		link(rel="stylesheet" type="text/css" id="u0" href="/js/lib/tinymce/skins/custom/skin.min.css")
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div.flex.site-body
+			div.sidemenu.col-2
+				ul.flex.flex-column
+					li
+						a(href="/car_brands") Марки
+					li.has-inner.active Модели
+						ul.sub_menu.flex-column(style="display:none")
+							each brand in data.car_brands
+								li
+									a(href="/car_models?car_brand=" + brand.id)=brand.brand_name
+			div#car-models.site-content.col-6
+				input#max-order(type="hidden" value=data.car_brands.length)
+				h1="Модели "+data.car_models.car_brand.brand_name
+				div(class="row")
+					a(href="/model_edit?id=new&car_brand="+data.car_models.car_brand.id class="btn btn-primary pull-right" title="Добавить модель") Добавить модель
+					- delete data.car_models['car_brand'];
+				ul.flex.table-header.white
+					li.col-1.text-center ID
+					li.text-center Модель
+					li.text-center Лого
+				div.flex.scrolled-content
+					each model in data.car_models
+						ul.flex(id="brand_"+model.id)
+							li.col-1.text-center=model.id
+							li.text-center
+								a(href="/model_edit?id="+model.id+"&car_brand="+model.brand_id)=model.model_name
+							li.text-center
+								img.logo(src=model.picture_name!=null?"http://busdetal.biz/public/img/car_models/"
+									+model.picture_name:"http://busdetal.biz/public/img/no_photo.jpg")
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+			

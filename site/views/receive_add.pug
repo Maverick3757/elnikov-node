@@ -1,0 +1,77 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(type='text/javascript' src='http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div(class="modal fade" id="margaReminder" role="dialog")
+			div(class="modal-dialog modal-sm")
+				div(class="modal-content")
+					div(class="modal-header")
+						button(type="button" class="close" data-dismiss="modal") &times;
+						h4(class="modal-title") Введите наценку!!!
+					div(class="modal-body")
+						input(type="text" class="form-control" id="preLoadMarge" value="0" placeholder="Наценка")
+						div(id="search-result")
+					div(class="modal-footer")
+						button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+						button(type="button" class="btn btn-success" onclick="$('#margaReminder').modal('hide');$('input[name=\"marga\"]').val($('#preLoadMarge').val());readXML(document.getElementById('export-xls'))") Продолжить
+		div(class='container text-center')
+			div(class="row" style="display:flex;justify-content: space-between;")
+				div(class="pull-left col-md-3 col-sm-3 white") Поставщик
+					select(style="width:100%" data-placeholder="Поставщик" id="providers" onchange="loadVinArtikuls($(this).val())")
+						option
+						each val, index in data.providers
+							option(value=val.id)=val.providers_name
+				div(class="pull-left white upload-file")
+					label(class="file_upload" for="export-xls")
+						span(class="button") Экспорт
+					input(type="file" id="export-xls" onchange="$('#margaReminder').modal('show');" onclick="checkBeforeLoad(event)")
+				div(class="pull-right marga white") Наценка, % 
+					input(name="marga" value="10.00" data-type="number" class="form-control" type="text" onchange="margaChanged()")
+				div(class="pull-right col-md-2 col-sm-3 white") Валюта
+					select(style="width:100%" data-placeholder="Валюта" id="currencies" onchange="currencyChanged(this)")
+						option
+						each val, index in data.currencies
+							option(value=val.id data-rate=val.rateToUAH)=val.name
+				div(class="pull-right input-order white") Курс
+					span(class="price-uah hidden" style="color:red;font-weight:bold")  EURO
+					input(name="kurs" value="" data-type="number" class="form-control" type="text" onchange="currencyValueChanged(this)")
+				div(class="pull-right input-order white") Сумма
+					div.row
+						span(class="currency-label")
+						input(type="text" class="form-control" disabled id="orderSum")
+					div.row.hidden.orderSumUah
+						span ГРН
+						input.form-control(type="text" id="orderSumUah" disabled)
+
+		div(class='container-fluid table-responsive order-res')
+
+			table(id='receives-table' class='table table-condensed text-center white' )
+				tr
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Артикул
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Название
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Доп. инфо
+					th(class='input-order text-center price-uah hidden') Цена, UAH
+					th(class='input-order text-center') Цена
+						span(class="currency-label")
+					th(class='input-order text-center') Цена продажи
+					th(class='input-order text-center') Кол-во
+					th(class='col-xs-2 col-sm-2 col-md-1 text-center') Распределение
+				include receive_add_row
+				+row(data, "display:none", 0)
+				+row(data, "", 1)
+			button(type="button" class="btn btn-primary" onclick="addNewRowForReceive()") Добавить товар +	
+			button(type="button" class="btn btn-success pull-right" onclick="saveOrder()") Сохранить
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

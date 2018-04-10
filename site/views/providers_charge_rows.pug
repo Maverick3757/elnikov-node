@@ -1,0 +1,10 @@
+each val, index in data.charges
+					li 
+						div=val.providers_name
+						div=val.prop_date
+						div=val.description
+						div=val.name
+						div.charge-sum
+							input(type="text" data-type="number" value=val.sum.toFixed(2) onchange="changeChargeSum("+val.id+",this.value)")
+						div.charge-rate
+							input(type="text" data-type="number" value=val.rate.toFixed(2) onchange="changeChargeRate("+val.id+",this.value)")

@@ -1,0 +1,80 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div(class="container")
+			div(class="row")
+				button(type="button" class="btn btn-primary pull-right" title="Добавить поставщика" data-toggle="modal" data-target="#depAdd") Добавить поставщика
+				form(onsubmit="addDep(event,this)")
+					div(class="modal fade" tabindex="-1" role="dialog" id="depAdd")
+						div(class="modal-dialog" role="document")
+							div(class="modal-content")
+								div(class="modal-header")
+									button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+										span(aria-hidden="true") &times;
+									h4(class="modal-title") Добавление поставщика
+								div(class="modal-body")
+									ul(class="list-group" style="text-align: left")
+										li(class="list-group-item justify-content-between") Имя поставщика
+											input(class="form-control pull-right" type="text" id="name" required)
+										li(class="list-group-item justify-content-between") Контакты
+											input(class="form-control pull-right" type="text" id="contact")
+										li(class="list-group-item justify-content-between") Информация
+											input(class="form-control pull-right" type="text" id="info")
+								div(class="modal-footer")
+									button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+									button(type="submit" class="btn btn-success") Сохранить
+		div(class='container table-responsive order-res')
+			h2 Поставщики
+			table(id='sklad-table' class='table table-condensed table-hover text-center white' )
+				tr
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') ID
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Имя поставщика
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Контакты
+					th(class='col-xs-4 col-sm-4 col-md-4 text-center') Информация
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Баланс, грн
+					th
+				each val in data.providers
+					tr
+						td(id="id")=val.id
+						td(id="name")
+							a(href="providers_details?id="+val.id)=val.providers_name
+						td(id="contact")=val.providers_contact	
+						td(id="info" style="text-align:left")=val.providers_info
+						td(id="balance" class=val.balance<0?"red":"green")=val.balance.toFixed(2)
+						td
+							button(type="button" class="btn btn-primary" title="Редактирование" data-toggle="modal" data-target="#depEdit_"+val.id)
+								span(class="icon-edit")
+							form(onsubmit="updateDep(event,this)")
+								div(class="modal fade" tabindex="-1" role="dialog" id="depEdit_"+val.id)
+									div(class="modal-dialog" role="document")
+										div(class="modal-content")
+											div(class="modal-header")
+												button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+													span(aria-hidden="true") &times;
+												h4(class="modal-title") Редактирование
+											div(class="modal-body")
+												ul(class="list-group" style="text-align: left")
+													li(class="list-group-item justify-content-between") Имя поставщика
+														input(class="form-control pull-right" type="text" id="name" value=val.providers_name required)
+													li(class="list-group-item justify-content-between") Контакты
+														input(class="form-control pull-right" type="text" id="contact" value=val.providers_contact)
+													li(class="list-group-item justify-content-between") Информация
+														input(class="form-control pull-right" type="text" id="info" value=val.providers_info)
+											div(class="modal-footer")
+												button(type="button" class="btn btn-danger" onclick="deleteDep("+val.id+")") Удалить
+												button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+												button(type="submit" class="btn btn-success") Сохранить
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

@@ -1,0 +1,86 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		- var maxOffset = data.sklad.data[1][0].max_qty;
+		- var pag_qty = data.sklad.hasOwnProperty('fillter')?Number(data.sklad.fillter.qty):10;
+		- var providers = data.sklad.hasOwnProperty('fillter')?data.sklad.fillter.providers.split(','):[];
+		input(type="hidden" id="pag_max" value=maxOffset)
+		input(type="hidden" id="pag_qty_input" value=pag_qty)
+		div(class='container filter')
+			div(class="row")
+				div(class="col-xs-4 col-sm-4 col-md-4")
+					select(style="width:100%" data-placeholder="Поставщик" id="providers" onchange="setProviders(this)" multiple)
+						option(value="") 
+						each val, index in data.providers
+							if providers.indexOf(val.id.toString())>=0
+								option(value=val.id selected)=val.providers_name
+							else
+								option(value=val.id)=val.providers_name
+				div(class="col-xs-6 col-sm-6 col-md-6")
+					input(type="text" class="form-control" id="search-string" name="search_string" value=data.sklad.hasOwnProperty('fillter')?data.sklad.fillter.search_string:"" form="pagination" placeholder="Поиск по ОЕ, артикулу или названию" onchange="this.form.submit()")
+		div(class='container')
+			- var page = data.sklad.hasOwnProperty('fillter')?Number(data.sklad.fillter.offset)/Number(data.sklad.fillter.qty):0;
+			- var pag_offset = data.sklad.hasOwnProperty('fillter')?Number(data.sklad.fillter.offset):0;
+			- var offsetToMin = pag_offset-pag_qty*2>0?pag_offset-pag_qty*2:0;
+			- var offsetToMax = offsetToMin+5*pag_qty<maxOffset?offsetToMin+5*pag_qty:Math.ceil(maxOffset/pag_qty,0)*pag_qty;
+			div.pagination-block
+				if offsetToMin>0
+					button(value=0 class="pag_page tobegin") <<
+					button(value=page*pag_qty-pag_qty class="pag_page minus") <
+				while offsetToMin <offsetToMax
+					if (offsetToMin/pag_qty) == page
+						button(value=offsetToMin class="pag_page active")=(offsetToMin/pag_qty)+1
+					else
+						button(value=offsetToMin class="pag_page")=(offsetToMin/pag_qty)+1
+					- offsetToMin = offsetToMin + pag_qty;
+				if offsetToMax < maxOffset
+					button(value=page * pag_qty + pag_qty class="pag_page plus") >
+					button(value=Math.ceil((maxOffset/pag_qty-1),0)*pag_qty class="pag_page toend") >>
+				label(for="pag_qty") Кол-во на странице
+				select(name="qty" id="pag_qty" onchange="this.form.submit()" form="pagination")
+					option(value=10) 10
+					option(value=20) 20
+					option(value=40) 40
+					option(value=100) 100
+			form(method="GET" action="/sklad" name="pagination" id="pagination")
+				input(type="hidden" id="sort_col" value=data.sklad.hasOwnProperty('fillter')?data.sklad.fillter.sort_col:"product_name" name="sort_col")
+				//
+				input(type="hidden" name="providers" value=data.sklad.hasOwnProperty('fillter') ? data.sklad.fillter.providers:'')
+				input(type="hidden" name="offset" id="pag_offset" value=pag_offset)
+				input(type="hidden" id="sort_direction" value=data.sklad.hasOwnProperty('fillter')?data.sklad.fillter.sort_direction:"ASC" name="sort_direction")
+		div(class='container table-responsive order-res')
+			table(id='sklad-table' class='table table-condensed table-hover text-center white' )
+				tr
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Товар
+						span(class="icon-sort-up product_name" onclick="changeSort(this, 'product_name')")
+					th(class='col-xs-1 col-sm-1 col-md-1 text-center') Поставщик
+						span(class="icon-sort-up providers_name" onclick="changeSort(this, 'providers_name')")
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Артикул поставщика
+						span(class="icon-sort-up providers_artikul" onclick="changeSort(this, 'providers_artikul')")
+					th(class='col-xs-2 col-sm-2 col-md-2 text-center') Номер ОЕ
+						span(class="icon-sort-up vin" onclick="changeSort(this, 'vin')")
+					th(class='col-xs-1 col-sm-1 col-md-1 text-center') Доп. Инфо.
+						span(class="icon-sort-up info" onclick="changeSort(this, 'info')")
+					th(class='text-center' style="width:4.16%") В наличии
+						span(class="icon-sort-up prod_total_stock" onclick="changeSort(this, 'prod_total_stock')")
+					th(class='text-center' style="width:4.16%") Цена продажи
+						span(class="icon-sort-up seil_price" onclick="changeSort(this, 'seil_price')")
+					th(class='text-center' style="width:4.16%") Цена закупки
+						span(class="icon-sort-up price" onclick="changeSort(this, 'price')")
+					th(class='text-center' style="width:4.16%") 
+						
+					include sklad_rows
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

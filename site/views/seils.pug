@@ -1,0 +1,95 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		- var lastMonthEndDate;
+		- var currentQuaterStartDate;
+		- var lastQuaterStartDate;
+		- var now;
+
+		- lastMonthEnd = new Date(new Date().getFullYear(), new Date().getMonth(), 0);
+		- var lastMonth = lastMonthEnd.getMonth()+1;
+		- var lastMonthyear = lastMonthEnd.getFullYear();
+		- lastMonthEndDay = lastMonthEnd.getDate();
+		- lastMonthEndDate = lastMonthyear+'-'+lastMonth+'-'+lastMonthEndDay;
+
+		- quater = Math.ceil((new Date().getMonth()+1)/3);
+		- currentQuaterStart = new Date(new Date().getFullYear(),(quater-1)*3, 1);
+		- month = currentQuaterStart.getMonth()+1;
+		- year = currentQuaterStart.getFullYear();
+		- currentQuaterStartDate = year+'-'+month+'-01';
+
+
+		- lastQuaterStart = new Date(new Date().getFullYear(),(quater-2)*3, 1);
+		- month = lastQuaterStart.getMonth()+1;
+		- year = lastQuaterStart.getFullYear();
+		- lastQuaterStartDate = year+'-'+month+'-01';
+
+		- lastQuaterEnd = new Date(new Date().getFullYear(),(quater-1)*3, 0);
+		- month = lastQuaterEnd.getMonth()+1;
+		- year = lastQuaterEnd.getFullYear();
+		- lastQuaterEndDay = lastQuaterEnd.getDate();
+		- lastQuaterEnd = year+'-'+month+'-'+lastQuaterEndDay;
+		- dayNow = new Date().getDate();
+		- var monthNow = new Date().getMonth()+1;
+		- var yearNow = new Date().getFullYear();
+		- now = yearNow+'-'+monthNow+'-'+dayNow;
+		include menu
+		input(type="hidden" id="sort_col" value="id")
+		input(type="hidden" id="sort_direction" value="ASC")
+		input(type="hidden" id="pag_qty" value="10000")
+		input(type="hidden" id="pag_offset" value="0")
+		div(class='container filter')
+			div(class="row")
+				div(class="col-xs-3 col-sm-3 col-md-3")
+					select(style="width:100%" data-placeholder="Фильтр по отделу" id="departments" onchange="setFilter()" multiple)
+						option(value="") 
+						each val, index in data.departments
+							option(value=val.id)=val.name
+				div(class="col-xs-4 col-sm-4 col-md-4")
+					input(type="text" class="form-control" id="search-string" value="" placeholder="Поиск по ОЕ, артикулу или названию" oninput="setFilter()")
+				div(class="col-xs-5 col-sm-5 col-md-5 date-filter")
+					div(class="row")
+						div(class="col-xs-12 col-sm-12 col-md-12" style="justify-content:flex-end")
+							select(data-placeholder="Период" id="date_period" onchange="setPeriod(this)" )
+								option(value="") 
+								option(value="1" date-from=now date-to=now) За сегодня
+								option(value="2" date-from=yearNow +'-01-01' date-to=now) За текущий год
+								option(value="3" date-from=yearNow +'-'+monthNow+'-01' date-to=now) За текущий месяц
+								option(value="4" date-from=lastMonthyear +'-'+lastMonth+'-01' date-to=lastMonthEndDate) За прошлый месяц
+								option(value="5" date-from=currentQuaterStartDate date-to=now) За текущий квартал
+								option(value="6" date-from=lastQuaterStartDate date-to=lastQuaterEnd) За прошлый квартал
+					div(class="row")
+						div(class="col-xs-6 col-sm-6 col-md-6") с
+							input(type="date" id="date-from" class="form-control" value="" onchange="$('#date_period').val('0');$('#date_period').trigger('chosen:updated');setFilter()")
+						div(class="col-xs-6 col-sm-6 col-md-6") по
+							input(type="date" id="date-to" class="form-control" value="" onchange="$('#date_period').val('0');$('#date_period').trigger('chosen:updated');setFilter()")
+		div(class='container total-cont')
+			div(class="pull-right white") Сумма, грн
+				input(class="form-control text-center" value=data.sails.length>0?data.sails[0].total.toFixed(2):"0.00" id="totals")
+		div(class='container table-responsive order-res')
+			ul(id='sails-table' class='text-center responsive-flex-table' )
+				li
+					div(class='') Номер
+						span(class="icon-sort-down" onclick="changeSort(this, 'id')")
+					div(class='') Дата
+						span(class="icon-sort-up" onclick="changeSort(this, 'date')")
+					div(class='') Менеджер
+						span(class="icon-sort-up" onclick="changeSort(this, 'manager_full_name')")
+					div(class='') Отдел
+						span(class="icon-sort-up" onclick="changeSort(this, 'name')")
+					div(class='') Сумма
+						span(class="icon-sort-up" onclick="changeSort(this, 'seil_sum')")
+				include seils_rows.pug
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

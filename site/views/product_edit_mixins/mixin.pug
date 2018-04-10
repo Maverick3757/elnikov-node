@@ -1,0 +1,77 @@
+mixin getModels(allBrands, allModels, allPacksages, allEngines, currentData, index)
+    - modelsArrary = [];
+    - package_array = [];
+    - engine_array = [];
+    - engine_data = {};
+    - models_data = {};
+    - package_data = {};
+    each model in currentData.models
+        - models_data[model.model_id]=model.model_name
+        - modelsArrary.push(model.model_id);
+        each package in model.car_packages
+            - package_data[package.car_package_id]=model.model_name+" "+package.build_years
+            - package_array.push(package.car_package_id);
+            each engine in package.car_engines
+                - engine_array.push(engine.id);
+                - engine_data[engine.id]=engine.cars_to_product_id;
+    - allModels = allModels.filter(function(i,n){return i.brand_id==currentData.brand_id;});
+    - allPacksages = allPacksages.filter(function(i,n){return modelsArrary.indexOf(i.model_id)>-1;});
+    - allEngines = allEngines.filter(function(i,n){return package_array.indexOf(i.package_id)>-1;});
+    li
+        select(id="brands_"+index data-attr="chosen" data-placeholder="Выберите марку")
+            each brand in allBrands
+                if brand.id != currentData.brand_id
+                    option(value=brand.id)=brand.brand_name
+                else
+                    option(value=brand.id selected)=brand.brand_name
+    li
+        select(id="models_"+index data-attr="chosen" multiple data-placeholder="Выберите модель")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все
+            each model in allModels
+                if modelsArrary.indexOf(model.id)==-1
+                    option(value=model.id)=model.model_name
+                else
+                    option(value=model.id selected)=model.model_name
+    li
+        select(id="packages_"+index data-attr="chosen" multiple data-placeholder="Выберите год выпуска")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все
+            each optgroup in modelsArrary
+                optgroup(label=models_data[optgroup] data-group-id=optgroup)
+                    - curPackGroup = allPacksages.filter(function(i,n){return i.model_id==optgroup;});
+                    each pack in curPackGroup
+                        if package_array.indexOf(pack.id) == -1
+                            option(value=pack.id)=pack.build_years
+                        else
+                            option(value=pack.id selected)=pack.build_years
+    li
+        select(id="engines_"+index data-attr="chosen" multiple data-placeholder="Выберите двигатель")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все
+            each optgroup in package_array
+                optgroup(label=package_data[optgroup] data-group-id=optgroup)
+                    - curEngGroup = allEngines.filter(function(i,n){return i.package_id==optgroup;});
+                    each engine in curEngGroup
+                        if engine_array.indexOf(engine.id) == -1
+                            option(value=engine.id)=engine.engine
+                        else
+                            option(value=engine.id selected ex-data=engine_data[engine.id])=engine.engine
+mixin getModelsSample(allBrands, index)
+    li
+        select(id="brands_"+index data-attr="chosen" data-placeholder="Выберите марку")
+            option(value="")
+            each brand in allBrands
+                option(value=brand.id)=brand.brand_name
+    li
+        select(id="models_"+index data-attr="chosen" multiple data-placeholder="Выберите модель")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все
+    li
+        select(id="packages_"+index data-attr="chosen" multiple data-placeholder="Выберите год выпуска")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все
+    li
+        select(id="engines_"+index data-attr="chosen" multiple data-placeholder="Выберите двигатель")
+            option(value="all") Все
+            option(value="deleteAll") Удалить все

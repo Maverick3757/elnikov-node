@@ -1,0 +1,28 @@
+if data.products.length>0
+	div(id='quick-search-table' class='flex white' )
+		ul.quick-search-table.header
+			li.text-center Номер ОЕ/Артикул/Доп.
+			li.text-center Название
+			li.text-center В отделах
+			li.text-center Цена,грн
+		div.scrolled-content
+			each val in data.products
+				ul
+					div.quick-add-from-search(style="display:none"  onclick="addProdToSail('"+val.providers_artikul+"')") Добавить в продажу
+					li
+						div Арт.: 
+							span=val.providers_artikul	
+						div ОЕ: 
+							span=val.vin
+						div Доп.:
+							span=val.info!=null ? val.info : ""
+					li=val.product_name
+					li
+						ul
+							each dep in data.departments
+								li=dep.name
+									span="-"+val['department_'+dep.id]
+					li.text-center=val.seil_price!=null ? (Math.ceil(val.seil_price/5)*5).toFixed(2) : 0.00
+else
+	h2 Товар не найден!!!
+		

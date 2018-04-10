@@ -1,0 +1,57 @@
+doctype html
+html(lang='en')
+    head
+        title= pageTitle
+        script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+        script(type='text/javascript' src='/js/chosen.jquery.min.js').
+        script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+        script(type='text/javascript' src='/js/datepicker.js').
+        link(rel="stylesheet" type="text/css" id="u0" href="/js/lib/tinymce/skins/custom/skin.min.css")
+        link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+        link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+        link(rel='stylesheet' type='text/css' href='/css/custom.css')
+        link(rel='stylesheet' type='text/css' href='/css/datepicker.css')
+    body
+        include menu
+            input(type="hidden" id="sort_col" value="created_at")
+            input(type="hidden" id="sort_direction" value="DESC")
+            input(type="hidden" id="pag_qty" value="10")
+            input(type="hidden" id="pag_max" value=data.orders[1][0].max_qty)
+            input(type="hidden" id="pag_offset" value="0")
+        div(class='container filter')
+            div(class="row")
+                input(type="text" class="datepicker-here pull-left" placeholder="Фильтр по дате")
+                script(type='text/javascript').
+                    $(".datepicker-here").datepicker({
+                        clearButton: true,
+                        range: true,
+                        maxDate: new Date(),
+                        multipleDatesSeparator: "-",
+                        onHide: function (inst, animationCompleted) {
+                            if (animationCompleted) {
+                                setFilter();
+                            }
+                        }
+                    });
+                    $('.datepicker-here').data('datepicker').setCurrentYear();
+                div(class="col-xs-4 col-sm-4 col-md-4")
+                    select(style="width:100%" data-placeholder="Статус заказа" id="statuses" onchange="setFilter()" multiple)
+                        option(value="")
+                        each val in data.statuses
+                            option(value=val.id)=val.status
+                div(class="col-xs-6 col-sm-6 col-md-6")
+                    input(type="text" class="form-control" id="search-string" value="" placeholder="Поиск по имени, емэйлу или телефону" oninput="setFilter()")
+        div.flex.site-body
+            div#orders.site-content.col-8
+                ul.flex.table-header.white
+                    li.col-1.text-center ID
+                    li.text-center Имя пользователя
+                    li.text-center Email/Телефон
+                    li.text-center Статус
+                    li.text-center Сумма
+                    li.text-center Дата создания
+                div.flex.scrolled-content
+                    include orders/orders_content
+        script(type='text/javascript' src='/js/custom_js/base.js').
+        each val in scripts
+            script(type='text/javascript' src='/js/custom_js/' + val + '.js')

@@ -1,0 +1,29 @@
+each val, index in data.sails
+					li(onclick="showSiledProducts(this,event)") 
+						div=val.id
+						div=val.prop_date
+						div=val.providers_name
+						div=val.sum_uah!==null?"UAH":val.name
+						div=val.sum_uah!==null?val.sum_uah.toFixed(2):val.sum.toFixed(2)
+						div=val.sum_uah!==null?1:val.rate.toFixed(2)
+						ul(class="sailed-product collapsed")
+							li 
+								div Товар
+								div Номер ОЕ
+								div Артикул
+								div Кол-во
+								div Цена
+								div Сумма
+								- var products = val.product_name!=null?val.product_name.split('|||'):"";
+								- var vins = val.product_vin!=null?val.product_vin.split('|||'):"";
+								- var artikuls = val.product_artikul.split('|||');
+								- var qty = val.qty.split('|||');
+								- var price = val.price.split('|||');
+							each product, product_index in products
+								li 
+									div=product
+									div=vins[product_index]
+									div=artikuls[product_index]
+									div=qty[product_index]
+									div=val.sum_uah!==null?((price[product_index]*1)*val.rate).toFixed(2):(price[product_index]*1).toFixed(2)
+									div=val.sum_uah!==null?(qty[product_index]*((price[product_index]*1)*val.rate)).toFixed(2):(qty[product_index]*price[product_index]).toFixed(2)

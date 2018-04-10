@@ -1,0 +1,8 @@
+each val, index in data.deductions
+	ul
+		li.flex.inline.text-center 
+			div=val.type
+			div=val.prop_date
+			div
+				input(type="text" value=val.name onchange="setNewNameForDeduct(this, "+val.id+")")
+			div=val.sum.toFixed(2)

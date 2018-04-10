@@ -1,0 +1,19 @@
+- var totalDohod = 0;
+- var totalDeduct = 0;
+- var totalEarn = 0;
+- analyticData = JSON.parse(data.analyticData)
+each val in analyticData
+	ul.flex-table-body
+		- totalDohod = totalDohod + val.dohod;
+		- totalDeduct = val.res_sum>0?val.res_sum +totalDeduct : totalDeduct;
+		- totalEarn = totalEarn + val.earnings;
+		li=val.date
+		li=val.earnings.toFixed(2)
+		li=val.dohod.toFixed(2)
+		li=val.res_sum>0?val.res_sum.toFixed(2):"0.00"
+div.table-footer
+ul.flex-table-footer
+	li Итого
+	li=totalEarn.toFixed(2)
+	li=totalDohod.toFixed(2)
+	li=totalDeduct.toFixed(2)

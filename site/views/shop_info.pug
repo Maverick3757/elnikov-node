@@ -1,0 +1,98 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div.flex.site-body
+			div#product_edit.site-content.col-8.static-info
+				h1 Статическая информация на сайте
+				div.row
+					button.btn.btn-success.pull-left(onclick="updateStaticInfo()") Сохранить
+				div.flex.white
+					div.info-block.col-10
+						ul.nav.nav-tabs
+							li.active
+								a(data-toggle="tab" href="#main_info") Информация
+							li
+								a(data-toggle="tab" href="#payments-info") Оплата
+							li
+								a(data-toggle="tab" href="#guaranty-info") Гарантия
+							li
+								a(data-toggle="tab" href="#delivery-info") Доставка
+							li
+								a(data-toggle="tab" href="#contacts-info") Контакты
+						div.tab-content
+							div#main_info.tab-pane.fade.in.active
+								div.content
+									label Заголовок главной страницы
+									input#tittle.form-control(value=data.static_info!=null?data.static_info.tittle:'')
+									label Мета описание главной страницы
+									textarea#meta_description.form-control=data.static_info!=null?data.static_info.meta_description:''
+									label Ключевые слова для главной страницы
+									textarea#meta_keywords.form-control=data.static_info!=null?data.static_info.meta_keywords:''
+									label Текст для главной страницы
+									textarea#main_page_text.form-control=data.static_info!=null?data.static_info.main_page_text:''
+									div(class="pull-left white upload-file")
+										label(class="file_upload" for="export-model-pic")
+											span(class="button") Загрузить лого
+										input(type="file" id="export-model-pic" onchange="loadImg(this,event, true)")
+										if data.static_info!=null
+											img(src=data.static_info.main_logo==null?"http://busdetal.biz/public/img/no_photo.jpg":"http://busdetal.biz//public/img/" + data.static_info.main_logo ex-name=data.static_info.main_logo img-name=data.static_info.main_logo)
+										else
+											img(src="http://busdetal.biz/public/img/no_photo.jpg")
+							div#payments-info.tab-pane.fade
+								div.content
+									label Информация об оплате
+									textarea#payments.form-control=data.static_info != null ? data.static_info.payments : ''
+							div#guaranty-info.tab-pane.fade
+								div.content
+									label Информация о гарантии
+									textarea#guaranty.form-control=data.static_info != null ? data.static_info.guaranty : ''
+							div#delivery-info.tab-pane.fade
+								div.content
+									label Информация о доставке
+									textarea#delivery.form-control=data.static_info != null ? data.static_info.delivery : ''
+							div#contacts-info.tab-pane.fade
+								div.content
+									label Город
+									input#city.form-control(value=data.static_info!=null?data.static_info.contacts.city:'')
+									label Адрес
+									input#town.form-control(value=data.static_info != null ? data.static_info.contacts.town : '')
+									label Email
+									input#email.form-control(value=data.static_info != null ? data.static_info.contacts.email : '')
+									label Телефоны
+									input#telephones.form-control(value=data.static_info != null ? data.static_info.contacts.telephones : '' onclick="showPhones();")
+									div(class="modal fade" id="telephones_dialog" role="dialog")
+										div(class="modal-dialog modal-sm")
+											div(class="modal-content")
+												div(class="modal-header")
+													button(type="button" class="close" data-dismiss="modal") &times;
+													h4(class="modal-title") Телефоны
+												div(class="modal-body")
+													input.form-control(type="text" oninput="addPhone(this)")
+												div(class="modal-footer")
+													button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+									label Email's(для уведомлений)
+									input#email_for_advise.form-control(value=data.static_info != null ? data.static_info.contacts.email_for_advise : '' onclick="showEmails();")
+									div(class="modal fade" id="email_for_advise_dialog" role="dialog")
+										div(class="modal-dialog modal-sm")
+											div(class="modal-content")
+												div(class="modal-header")
+													button(type="button" class="close" data-dismiss="modal") &times;
+													h4(class="modal-title") Телефоны
+												div(class="modal-body")
+													input.form-control(type="email" oninput="addEmail(this)")
+												div(class="modal-footer")
+													button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')

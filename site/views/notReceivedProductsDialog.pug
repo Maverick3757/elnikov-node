@@ -1,0 +1,42 @@
+button(type="button" class="btn btn-danger" data-toggle="modal" data-target="#not_received_prod") Непринятый товар
+	span(class="badge badge-default badge-pill") 0
+div(class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="not_received_prod")
+	div(class="modal-dialog" role="document")
+		div(class="modal-content")
+			div(class="modal-header")
+				button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+					span(aria-hidden="true") &times;
+				h4(class="modal-title") Непринятый товар
+			div(class="modal-body")
+				ul(class="nav nav-tabs")
+					each val, index in data.departments
+						if val.id!=1
+							if val.id==2
+								li(class="active")
+									a(href="#"+val.id data-toggle="tab")=val.name
+							else
+								li
+									a(href="#"+val.id data-toggle="tab")=val.name
+				div(class="tab-content clearfix")
+					each val, index in data.notReceivedData
+						if index!=1
+							div(class=(index==2) ? "tab-pane active" : "tab-pane" id=index)
+							
+								table(class='table table-hover text-center' )
+									each val2, index2 in val
+											tr(class="sub-head")
+												td(colspan=3)="Поставка №"+index2+" от "+val2[0].date+" "+val2.length
+													button(class="btn btn-success pull-right" type="button" onclick="moveFromTmpProducts(this, "+index+", "+index2+")") Принять
+												each product, key in val2
+													tr(class="products-not-received")
+														td!="<strong>"+product.product_name+"</strong><br>"+product.providers_artikul+product.info
+														td
+															input(class="form-control" data-type="number" attr-data=product.cor_id name="res_qty" id="res_qty"+index2 type="text" value=product.qty disabled)
+														td
+															input(class="form-control" data-type="number" name="stock" type="text" value=product["department_"+index] disabled)
+									else
+										tr
+											h3 Нет непринятых товаров
+
+			div(class="modal-footer")
+				button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть

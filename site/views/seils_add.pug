@@ -1,0 +1,91 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		input(type="hidden" id="manager_full_name" value=user.name!=null ? user.name:''+" "+user.family_name!=null ? user.family_name : '')
+		div(class='container filter')
+			div(class="row")
+				div(class="col-xs-4 col-sm-4 col-md-4")
+					select(style="width:100%" data-placeholder="Выберите отдел" id="department" onchange="setDepartment()")
+						option(value="") 
+						each dep in data.departments
+							option(value=dep.id)=dep.name
+				div(class="col-xs-2 col-sm-2 col-md-2 pull-right")
+					div(class="row white" style="font-weight:bold") Скидка
+					div(class="row discount")
+						input(class="form-control pull-center text-center" id="discount-value" type="text" value="0" onchange="countDiscount()")
+						select(style="width:20%" data-placeholder="Выберите отдел" id="discount-type" onchange="countDiscount()")
+							option(value="0") %
+							option(value="1") грн
+				div(class="col-xs-2 col-sm-2 col-md-2 pull-right")
+					div(class="row white" style="font-weight:bold") К оплате, грн
+					div(class="row")
+						input(id="orderSumDef" type="hidden" value="0")
+						input(class="form-control pull-center text-center" id="orderSum" disabled type="text" value="0")
+		div(class='container table-responsive order-res')
+			table(id='sail-table' class='table table-condensed table-bordered text-center white' )
+				tr
+					th(rowspan="2" class='col-xs-2 col-sm-2 col-md-2 text-center') Артикул
+					th(rowspan="2" class='col-xs-2 col-sm-2 col-md-2 text-center') Название
+					th(colspan="2" class='col-xs-2 col-sm-2 col-md-2 input-order text-center') Остатки
+					th(rowspan="2" class='input-order text-center' style=user.role!=1?"display:none":"") Цена, закупки
+					th(rowspan="2" class='input-order text-center') Цена
+					th(rowspan="2" class='input-order text-center') Кол-во
+					th(rowspan="2" class='input-order text-center') ИТОГО
+				tr
+					th(class='col-xs-1 col-sm-1 col-md-1 input-order text-center') В отделе
+					th(class='col-xs-1 col-sm-1 col-md-1 input-order text-center') Все
+				tr(class="sail-product")
+					td
+						span.icon-delete(onclick="deleteSailRow(this)")
+						select(style="width:100%" data-placeholder="Артикул поставщика" id="providersArtikul_1" onchange="artikulChanged(this)")
+							option(value="") 
+							each provArt in data.uniqProvArtikuls
+								option(value=provArt.providers_artikul)=provArt.providers_artikul
+					td
+						input(type="hidden" id="VIN_1")
+						div(id="name_1" data-product="")
+					td
+						input(class="form-control pull-center" id="qtyInDep_1" disabled type="text" value="0")
+						div(class="modal fade" tabindex="-1" role="dialog" id="departmentOrdering_1")
+							div(class="modal-dialog modal-sm" role="document")
+								div(class="modal-content")
+									div(class="modal-header")
+										button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+											span(aria-hidden="true") &times;
+										h4(class="modal-title") Товар по отделам
+									div(class="modal-body")
+										ul(class="list-group")
+											each dep in data.departments
+												li(class="list-group-item justify-content-between")=dep.name
+													input(class="form-control pull-right input_qty_dialog input_qty_residues" id="departmentRes_"+dep.id disabled type="text" value="0")
+									div(class="modal-footer")
+										button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+					
+					td
+						button(type="button" class="btn btn-danger" id="groupButton_1" data-toggle="modal" data-target="#departmentOrdering_1") Смотреть
+					td(style=user.role!=1?"display:none":"")
+						input(class="form-control pull-center"  id="myPrice_1" disabled type="text" value="0")
+					td
+						input(id="defaultPrice_1" type="hidden")
+						input(class="form-control pull-center" id="seilPrice_1" disabled type="text" value="0")
+					td
+						input(class="form-control pull-center" id="seilQty_1" type="text" value="0" onchange="qtyChanged(this)")
+					td
+						input(class="form-control pull-center" id="totalSeilPrice_1" disabled type="text" value="0")
+			button(type="button" class="btn btn-success pull-right" onclick="save()") Сохранить
+			button.btn.btn-primary.pull-right(type="button" style="margin-right:10px;" onclick="printPreview()") Предпросмотр
+				span.icon-preview
+			script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+		div(class="printing-container text-center")

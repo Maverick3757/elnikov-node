@@ -1,0 +1,10 @@
+//
+   Created by Юрий on 01.02.2018.
+each val in data
+    li.flex(onclick="addEquivalent(this)" data-product_id=val.id)
+        img(src=val.picture_name!=null?"http://busdetal.biz/public/img/products/"+val.picture_name:"http://busdetal.biz/public/img/no_photo.jpg")
+        div
+            div.row!="<strong>"+val.product_name+"</strong>("+val.info+")"
+            div.row!="<strong>ОЕ:</strong>"+val.vin+" <span class='artikul'><strong>Артикул:</strong>"+val.providers_artikul+"</span>"
+            div.row.seil-price!="<strong>ЦЕНА:</strong><span>"+(Math.ceil(val.seil_price/5)*5).toFixed(2)+"</span>"
+

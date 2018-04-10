@@ -1,0 +1,89 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		div#addProductForOrder.modal.fade(role="dialog")
+			div(class="modal-dialog modal-lg")
+				div(class="modal-content")
+					div(class="modal-header")
+						button(type="button" class="close" data-dismiss="modal") &times;
+						h4(class="modal-title") Быстрый поиск
+					div(class="modal-body")
+						input.form-control(type="text" placeholder="Введите данные для поиска товаров" oninput="searchProduct(this)")
+						ul.flex.analog-search-result(style="display:none")
+						div.col-10
+							ul.equivalent_product.flex.col-10
+					div(class="modal-footer")
+						button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+		div.flex.site-body
+			div#order_edit.site-content.col-8
+				h1="Заказ №"+data.order[0].id+" oт "+data.order[0].date
+				div.row
+					input#order_id(type="hidden" value=data.order[0].id)
+					button.btn.btn-success.pull-left(onclick="saveOrder()") Сохранить
+					a.btn.btn-primary(href="/orders" style="margin-left:10px") Назад
+					button.btn.btn-danger(onclick="deleteOrder()" style="margin-left:10px") Удалить
+				div.flex.white
+					div.info-block.col-10.flex
+						div.col-3
+							h3 Данные о клиенте
+							label Имя
+							input.form-control(value=data.order[0].user_name disabled)
+							label Телефон
+							input.form-control(value=data.order[0].user_telephone disabled)
+							label Eamil
+							input.form-control(value=data.order[0].user_email disabled)
+							label Адрес
+							textarea.form-control(disabled)=data.order[0].order_address
+							label Доп. информация
+							textarea.form-control(disabled)=data.order[0].other_info
+						div.col-7
+							h3 Данные о заказе
+							label Статус
+							select(style="width:100%" data-placeholder="Статус заказа" id="order_status")
+								each val in data.statuses
+									if val.id == data.order[0].order_status
+										option(value=val.id selected)=val.status
+									else
+										option(value=val.id)=val.status
+							div.ordered-products
+								div.flex
+									h3 Продукты
+									button.btn-primary(data-toggle="modal" data-target="#addProductForOrder") Добавить товар
+								ul.flex-column
+									li.flex
+										div.prod-picture.flex Фото
+										div.prod-name Название
+										div.prod-qty Кол-во
+										div.prod-price Цена
+										div.prod-total-price Итого
+									each prod in data.order
+										li.flex.products
+											div.prod-picture.flex
+												- picture_name=prod.picture_name!=null?"http://busdetal.biz/public/img/products/"+prod.picture_name:"http://busdetal.biz/public/img/no_photo.jpg";
+												img(src=picture_name)
+											div.prod-name=prod.product_name+" ("+prod.info+") "+prod.providers_artikul
+												input(type="hidden" value=prod.product_id)
+											div.prod-qty=prod.qty
+											div.prod-price=prod.price.toFixed(2)
+											div.prod-total-price=(prod.price*prod.qty).toFixed(2)
+												span.icon-delete(onclick="deleteOrderedProduct(this)")
+									li.flex.totals
+										div.prod-picture.flex
+										div.prod-name
+										div.prod-qty
+										div.prod-price ИТОГО
+										div.prod-total-price
+											input#order_sum.form-control(value=data.order[0].order_sum.toFixed(2) disabled)
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')

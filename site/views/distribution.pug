@@ -1,0 +1,43 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+	body
+		include menu
+		input(type="hidden" id="pag_max" value=data.distributions[1][0].max_qty)
+		input(type="hidden" id="sort_direction" value="ASC")
+		input(type="hidden" id="pag_qty" value="10")
+		input(type="hidden" id="pag_offset" value="0")
+		div(class='container filter')
+			div(class="row")
+				div(class="col-xs-4 col-sm-4 col-md-4")
+					select(style="width:100%" data-placeholder="Скрыть отделы" id="departments" onchange="" multiple)
+						option(value="") 
+						each val in data.departments
+							option(value=val.id )=val.name
+				div(class="col-xs-4 col-sm-4 col-md-4")
+					input(type="text" class="form-control" id="search-string" value="" placeholder="Поиск по ОЕ, артикулу или названию" oninput="setFilter()")
+				div(class="col-xs-2 col-sm-2 col-md-2")
+					button(type="button" class="btn btn-success pull-right" onclick="saveEditedProduct()") Сохранить
+			div(class="alert alert-danger")
+				<strong>Внимание!</strong> во всех отделах должно быть положительное количество товаров.
+		div(class='container table-responsive order-res' style='display:flex; justify-content:center')
+			table(id='distribution-table' class='table text-center white' )
+				thead
+					tr
+						th(class='text-center') Товар
+							span(class="icon-sort-down" onclick="changeSort(this, 'product_name')")
+						each val, index in data.departments
+							th(class='text-center' id="department_"+val.id)=val.name
+				include distributions_rows.pug
+				script(type='text/javascript' src='/js/custom_js/base.js').
+			each val in scripts
+				script(type='text/javascript' src='/js/custom_js/'+val+'.js')

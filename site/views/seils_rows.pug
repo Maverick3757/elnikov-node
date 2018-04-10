@@ -1,0 +1,60 @@
+each val, index in data.sails
+					li(onclick="showSiledProducts(this,event)") 
+						div=val.id
+						div=val.prop_date
+						div=val.manager_full_name
+						div=val.name
+						div=val.seil_sum.toFixed(2)
+						ul(class="sailed-product collapsed")
+							li 
+								div Товар
+								div Номер ОЕ
+								div Артикул
+								div Кол-во
+								div Цена
+								div Сумма
+								div 
+								- var products = val.product_name.split('|||');
+								- var vins = val.product_vin.split('|||');
+								- var artikuls = val.product_artikul.split('|||');
+								- var qty = val.qty.split('|||');
+								- var price = val.price_uah.split('|||');
+								- var ids = val.product_id.split('|||');
+							each product, product_index in products
+								li 
+									div!=product
+									div=vins[product_index]
+									div=artikuls[product_index]
+									div=qty[product_index]
+									div=(price[product_index]*1).toFixed(2)
+									div=(qty[product_index]*price[product_index]).toFixed(2)
+									div
+										button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#sail_"+val.id+"-prod_"+ids[product_index] title="Возврат") Возврат
+										form(onsubmit="productBack(event,this)")
+											div(class="modal fade" tabindex="-1" role="dialog" id="sail_"+val.id+"-prod_"+ids[product_index])
+												div(class="modal-dialog" role="document")
+													div(class="modal-content")
+														input(type="hidden" id="department_id" value=val.department)
+														input(type="hidden" id="product_id" value=ids[product_index])
+														input(type="hidden" id="maxQty" value=qty[product_index])
+														input(type="hidden" id="sail_id" value=val.id)
+														input(type="hidden" id="sail_sum" value=val.seil_sum.toFixed(2))
+														div(class="modal-header")
+															button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+																span(aria-hidden="true") &times;
+															h4(class="modal-title") Возврат товара
+														div(class="modal-body")
+															ul(class="list-group" style="text-align: left")
+																li(class="list-group-item justify-content-between" style="display:inline-block;width:100%") Название
+																	div(class="form-control pull-right col-xs-2 col-sm-2 col-md-2" style="text-align:center;width: 50%;height: auto;background: #eeeeee;" id="name")!=product
+																li(class="list-group-item justify-content-between") Артикул
+																	input(class="form-control pull-right" id="artikuls" type="text" value=artikuls[product_index] disabled)
+																li(class="list-group-item justify-content-between") Кол-во
+																	input(class="form-control pull-right" id="qty" type="text" value="1" onchange="checkBackQty(this)")
+																li(class="list-group-item justify-content-between") Цена
+																	input(class="form-control pull-right" id="price" value=(price[product_index]*1).toFixed(2) type="text" disabled)
+																li(class="list-group-item justify-content-between") Сумма
+																	input(class="form-control pull-right" type="total" id="total" value=(price[product_index]*1).toFixed(2) disabled)
+														div(class="modal-footer")
+															button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть
+															button(type="submit" class="btn btn-success") Возврат

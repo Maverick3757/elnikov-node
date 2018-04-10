@@ -1,0 +1,103 @@
+div(id="loading-popup")
+nav(class="navbar sticky-top navbar-light bg-faded")
+	div(class="nav-collapse")
+		ul(id="menu" class="nav")
+			li(class="dropdown pull-left")
+				a(class="dropdown-toggle" data-toggle="dropdown" href="#") Настройки
+					span(class="caret")
+				ul(class="dropdown-menu scroll-menu")
+					li
+						a(class="no-dropdown menu-cpanel" href="/departments") Отделы
+					li
+						a(class="no-dropdown menu-cpanel" href="/providers") Поставщики
+					li
+						a(class="no-dropdown menu-cpanel" href="/managers") Менеджеры
+			li(class="dropdown pull-left")
+				a(href="/deductions") Расходы
+			li(class="dropdown pull-left")
+				a(class="dropdown-toggle" data-toggle="dropdown" href="#") Управление товаром
+					span(class="caret")
+				ul(class="dropdown-menu scroll-menu")
+					li
+						a(class="no-dropdown menu-cpanel" href="/sklad") Все товары
+					li
+						a(class="no-dropdown menu-cpanel" href="/distribution") Распределение товара
+					li
+						a(class="no-dropdown menu-cpanel" href="/tovar/add") Добавление товра
+			li(class="dropdown pull-left")
+				a(class="dropdown-toggle" data-toggle="dropdown" href="#") Продажи
+					span(class="caret")
+				ul(class="dropdown-menu scroll-menu")
+					li
+						a(class="no-dropdown menu-cpanel" href="/seils") Все продажи
+					li(class="divider")
+					li
+						a(class="no-dropdown menu-cpanel" href="/seils/add") Новая продажа
+			li(class="dropdown pull-left")
+				a(class="dropdown-toggle" data-toggle="dropdown" href="#") Поставки
+					span(class="caret")
+				ul(class="dropdown-menu scroll-menu")
+					li
+						a(class="no-dropdown menu-cpanel" href="/receives") Все поставки
+					li.dropdown-submenu
+						a(class="dropdown-toggle menu-cpanel" href="/providers_charge") Взаиморасчеты
+						ul.dropdown-menu.menu-scrollable(style="display: none;")
+							each prov in data.providers
+								li
+									a.no-dropdown(href="providers_details?id=" + prov.id)=prov.providers_name
+					li(class="divider")
+					li
+						a(class="no-dropdown menu-cpanel" href="/receive/add") Новая поставка
+			li(class="dropdown pull-left")
+				a(href="/analitic") Статистика
+			li(class="dropdown pull-left")
+				a(class="dropdown-toggle" data-toggle="dropdown" href="#") Сайт
+					span(class="caret")
+				ul(class="dropdown-menu scroll-menu")
+					li
+						a(class="no-dropdown menu-cpanel" href="/car_brands") Авто
+					li(class="divider")
+					li
+						a(class="no-dropdown menu-cpanel" href="/products_category") Категории
+					li(class="divider")
+						li
+							a(class="no-dropdown menu-cpanel" href="/orders") Заказы
+					li(class="divider")
+						li
+							a(class="no-dropdown menu-cpanel" href="/manufacturers") Производители
+					li(class="divider")
+						li
+							a(class="no-dropdown menu-cpanel" href="/product_labels") Метки товаров
+					li(class="divider")
+						li
+							a(class="no-dropdown menu-cpanel" href="/news") Новости
+					li(class="divider")
+						li
+							a(class="no-dropdown menu-cpanel" href="/shop-info") Информация на сайте
+			li(class="pull-left")
+				include notReceivedProductsDialog
+			li(class="pull-left" style="margin-left:10px;")
+				button(type="button" class=data.newOrders>0?"btn btn-danger new-orders":"btn btn-default new-orders") Новые заказы
+					span(class="badge badge-default badge-pill")=data.newOrders
+	table(class="white")
+		tr
+			td(colspan="2") Курс
+		tr
+			td Доллар
+			td Евро
+		tr
+			td
+				input(type="text" class="form-control" id="todayRate_2" value=data.todayRate[1].rateToUAH.toFixed(2) onchange="setTodayRate(2)")
+			td
+				input(type="text" class="form-control" id="todayRate_3" value=data.todayRate[2].rateToUAH.toFixed(2) onchange="setTodayRate(3)")
+div(class="modal fade" id="quickSerch" role="dialog")
+	div(class="modal-dialog modal-lg")
+		div(class="modal-content")
+			div(class="modal-header")
+				button(type="button" class="close" data-dismiss="modal") &times;
+				h4(class="modal-title") Быстрый поиск
+			div(class="modal-body")
+				input(type="text" class="form-control" id="search-string-fast" value="" placeholder="Поиск по ОЕ, артикулу или названию" autofocus oninput="getQuickSerchProducts()")
+				div(id="search-result")
+			div(class="modal-footer")
+				button(type="button" class="btn btn-primary" data-dismiss="modal") Закрыть

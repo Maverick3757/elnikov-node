@@ -1,0 +1,135 @@
+doctype html
+html(lang='en')
+	head
+		title= pageTitle
+		script(type='text/javascript' src='/js/lib/jquery-3.2.0.min.js').
+		script(type='text/javascript' src='/js/chosen.jquery.min.js').
+		script(type='text/javascript' src='/js/lib/bootstrap.min.js').
+		script(type='text/javascript' src='https://d3js.org/d3.v4.min.js').
+		script(type='text/javascript' src='/js/datepicker.js').
+		each val in scripts
+			script(type='text/javascript' src='/js/custom_js/'+val+'.js')
+		
+
+		
+		link(rel='stylesheet' type='text/css' href='/css/stylesheet_bootstrap.css')
+		link(rel='stylesheet' type='text/css' href='/css/chosen.css')
+		link(rel='stylesheet' type='text/css' href='/css/custom.css')
+		link(rel='stylesheet' type='text/css' href='/css/datepicker.css')
+		style.
+			.axis path {
+			fill: none;
+			stroke: grey;
+			shape-rendering: crispEdges;
+			}
+			.axis text {
+			}
+			.tick line {
+			stroke: grey;
+			shape-rendering: crispEdges;
+			}
+			.legend-item{
+				cursor:pointer
+			}
+			.axis .grid {
+			stroke: grey;
+			shape-rendering: crispEdges;
+			}
+			.toolTip {
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			position: absolute;
+			display: none;
+			width: auto;
+			height: auto;
+			background: none repeat scroll 0 0 white;
+			border: 0 none;
+			border-radius: 8px 8px 8px 8px;
+			box-shadow: -3px 3px 15px #888888;
+			color: black;
+			font: 12px sans-serif;
+			padding: 5px;
+			text-align: center;
+			}
+
+			text {
+			font: 10px sans-serif;
+			color: white;
+			}
+			text.value {
+			font-size: 120%;
+			fill: white;
+			}
+
+			.axisHorizontal path{
+			fill: none;
+			}
+
+			.axisHorizontal .tick line {
+			stroke-width: 1;
+			stroke: rgba(0, 0, 0, 0.2);
+			}
+
+			.bar {
+			fill: steelblue;
+			fill-opacity: .9;
+			}
+			path.dc-chart.area{
+			fill-opacity: .3;
+			}
+	body
+		include menu
+		div(style="width:80%;margin:auto")
+			input(type="text" class="datepicker-here pull-left" placeholder="Фильтр по дате")
+			div(class="diagrams")
+				div(id="diagram1")
+				div(id="diagram2")
+		script(type='text/javascript').
+			$(".datepicker-here").datepicker({
+				clearButton: true,
+				range: true,
+				maxDate: new Date(),
+				multipleDatesSeparator: "-",
+				onHide: function(inst, animationCompleted){
+					if(animationCompleted){
+						setFilter(inst.selectedDates);
+					}
+				}
+			});
+			$('.datepicker-here').data('datepicker').setCurrentYear();
+			var data = ('#{data.analyticData}'); 
+			data = $.parseJSON(data.replace(/&quot;/g,'"'));
+			createBarDiagram(data);
+			createLinerDiagram(data);
+		div(class="analiticcontainer flex")
+			div.analytic-table
+				h4 Общая статистика
+				ul.flex-table-footer.sub
+						li В КАССЕ
+						li=data.onHand[0].onHand+" грн"
+				ul(class='text-center white table-header' )
+						li Дата
+						li Прибыль, грн
+						li Доходы, грн
+						li Расходы, грн
+				div.scrolled-content
+					include analitic_rows.pug
+			div.providers-balance-table
+				h4 Поставщики
+				- var totalProvBalance = 0;
+				ul(class='text-center white table-header' )
+						li Имя
+						li Баланс, грн
+				div.scrolled-content
+					- analyticData = JSON.parse(data.analyticData)
+					each val in data.providers
+						ul.flex-table-body
+							- totalProvBalance = totalProvBalance + val.balance;
+							li=val.providers_name
+							li(class=val.balance<0?"red":"green")=val.balance.toFixed(2)
+				div.table-footer
+					ul.flex-table-footer
+						li Итого
+						li(class=totalProvBalance<0?"red":"green")=totalProvBalance.toFixed(2)
+		script(type='text/javascript' src='/js/custom_js/base.js').
+		
+			
