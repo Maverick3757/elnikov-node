@@ -12,23 +12,23 @@ module.exports = function (server) {
              */
             dbServer: {
                 host: 'localhost',
-                user: 'basezil1_elnikov',
-                password: 'WsfzhUEr$noK',
+                user: '****',
+                password: '***',
 				multipleStatements: true,
-                database: 'basezil1_elnikovDB',
-				port: 28000
+                database: '****',
+				port: ****
             },
 
             /**
              * Default configuration for the SSH tunnel
              */
             tunnelConfig: {
-			  host: 'uashared09.twinservers.net',
-			  port: 21098,
-			  username: 'basezil1',
-			  password: '7kBB33aal9',
-			  dstPort: 3306,
-			  localPort: 28000
+			  host: '*****',
+			  port: *****,
+			  username: '****',
+			  password: '****',
+			  dstPort: ****,
+			  localPort: ****
             },
 
             /**
